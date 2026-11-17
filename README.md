@@ -18,13 +18,13 @@ O nome vem de **Bene**dito + **vita** (vida, em latim) — "boa vida".
 
 ## Stack
 
-| Camada    | Tecnologia                                                       |
-| --------- | ---------------------------------------------------------------- |
-| Frontend  | React 19, TypeScript, Vite                                       |
-| Backend   | Node.js, TypeScript, Fastify 5, Zod                              |
-| Banco     | PostgreSQL 17 (Docker), Prisma 7                                 |
-| Testes    | Vitest, Testing Library, `fastify.inject`                        |
-| Qualidade | ESLint (typescript-eslint strict), Prettier, GitHub Actions (CI) |
+| Camada    | Tecnologia                                  |
+| --------- | ------------------------------------------- |
+| Frontend  | React 19, TypeScript, Vite                  |
+| Backend   | Node.js, TypeScript, Fastify 5, Zod         |
+| Banco     | PostgreSQL 17 (Docker), Prisma 7            |
+| Testes    | Vitest, Testing Library, `fastify.inject`   |
+| Qualidade | ESLint (typescript-eslint strict), Prettier |
 
 Monorepo com **npm workspaces** (`backend/` e `frontend/`).
 
