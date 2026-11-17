@@ -1,11 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  addDays,
-  clinicDateTimeToUtc,
-  clinicDayRange,
-  isValidCalendarDate,
-  toClinicParts,
-} from './clinic-time.ts';
+import { addDays, clinicDateTimeToUtc, clinicDayRange, toClinicParts } from './clinic-time.ts';
 
 describe('clinic time (America/Sao_Paulo)', () => {
   it('converts clinic wall-clock time to UTC', () => {
@@ -36,11 +30,5 @@ describe('clinic time (America/Sao_Paulo)', () => {
   it('adds days across month boundaries', () => {
     expect(addDays('2026-11-30', 1)).toBe('2026-12-01');
     expect(addDays('2026-01-01', -1)).toBe('2025-12-31');
-  });
-
-  it('validates calendar dates', () => {
-    expect(isValidCalendarDate('2026-02-28')).toBe(true);
-    expect(isValidCalendarDate('2026-02-30')).toBe(false);
-    expect(isValidCalendarDate('20-11-2026')).toBe(false);
   });
 });

@@ -45,6 +45,18 @@ describe('database constraints', () => {
     ).resolves.toMatchObject({ status: 'SCHEDULED' });
   });
 
+  it.each([
+    ['15 minutes past the hour', '2026-11-20T17:15:00.000Z'],
+    ['with seconds', '2026-11-20T17:00:30.000Z'],
+    ['with milliseconds', '2026-11-20T17:30:00.001Z'],
+  ])('rejects a slot not aligned to 30 minutes (%s)', async (_case, instant) => {
+    const base = await seedBase();
+
+    await expect(
+      db.appointment.create({ data: { ...base, scheduledAt: new Date(instant) } }),
+    ).rejects.toThrow();
+  });
+
   it('requires canceled_at exactly when the appointment is canceled', async () => {
     const base = await seedBase();
 

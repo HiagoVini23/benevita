@@ -65,14 +65,11 @@ function offsetMinutesAt(instant: Date): number {
   return (wallClockAsUtc - instant.getTime()) / MS_PER_MINUTE;
 }
 
-export function isValidCalendarDate(date: string): boolean {
-  if (!DATE_PATTERN.test(date)) return false;
-  const [year, month, day] = parseDate(date);
-  const probe = new Date(Date.UTC(year, month - 1, day));
-  return probe.getUTCFullYear() === year && probe.getUTCMonth() === month - 1;
-}
-
-/** Converts a clinic wall-clock date/time to the UTC instant it represents. */
+/**
+ * Converts a clinic wall-clock date/time to the UTC instant it represents. A single offset lookup
+ * is exact for America/Sao_Paulo (no daylight saving time since 2019); a zone with DST would need
+ * a second pass around the transitions.
+ */
 export function clinicDateTimeToUtc(date: CalendarDate, time: WallTime): Date {
   const [year, month, day] = parseDate(date);
   const [hour, minute] = parseTime(time);

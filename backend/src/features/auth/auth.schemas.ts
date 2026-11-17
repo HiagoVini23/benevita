@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { Role } from '../../generated/prisma/enums.ts';
 
 export const loginBodySchema = z.object({
   email: z.email().transform((email) => email.toLowerCase()),
@@ -8,7 +9,7 @@ export const loginBodySchema = z.object({
 export const authUserSchema = z.object({
   id: z.uuid(),
   name: z.string(),
-  role: z.enum(['STAFF', 'PATIENT']),
+  role: z.enum(Role),
   patientId: z.uuid().nullable(),
 });
 

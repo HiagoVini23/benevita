@@ -9,7 +9,7 @@ import { authRoutes } from './features/auth/auth.routes.ts';
 import { catalogRoutes } from './features/catalog/catalog.routes.ts';
 import { healthRoutes } from './features/health/health.routes.ts';
 import type { AppDependencies } from './shared/app-dependencies.ts';
-import { errorHandler, type ErrorResponse } from './shared/errors/error-handler.ts';
+import { errorHandler, notFoundHandler } from './shared/errors/error-handler.ts';
 
 export interface BuildAppOptions {
   logger?: boolean;
@@ -21,14 +21,7 @@ export function buildApp(deps: AppDependencies, { logger = false }: BuildAppOpti
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
   app.setErrorHandler(errorHandler);
-  app.setNotFoundHandler((request, reply) =>
-    reply.status(404).send({
-      error: {
-        code: 'NOT_FOUND',
-        message: `Rota ${request.method} ${request.url} não encontrada.`,
-      },
-    } satisfies ErrorResponse),
-  );
+  app.setNotFoundHandler(notFoundHandler);
 
   void app.register(fastifyJwt, {
     secret: deps.env.JWT_SECRET,

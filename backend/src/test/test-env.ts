@@ -6,13 +6,15 @@ if (existsSync(rootEnvFile)) {
   process.loadEnvFile(rootEnvFile);
 }
 
-/**
- * Integration tests run against a dedicated database (never the dev one). Each git worktree can
- * point TEST_DATABASE_URL at its own database so parallel test runs do not wipe each other.
- */
+/** Integration tests run against a dedicated database, reset before every test. */
 export const testDatabaseUrl =
   process.env.TEST_DATABASE_URL ??
   'postgresql://benevita:benevita@localhost:5432/benevita_test?schema=public';
+
+// Tests truncate every table: refuse to run against the development database by mistake.
+if (testDatabaseUrl === process.env.DATABASE_URL) {
+  throw new Error('TEST_DATABASE_URL must point to a different database than DATABASE_URL');
+}
 
 export const testEnv = {
   NODE_ENV: 'test',
