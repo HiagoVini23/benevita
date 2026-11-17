@@ -2,8 +2,8 @@ import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import type { FeaturePluginOptions } from '../../shared/app-dependencies.ts';
 import { requireRole } from '../../shared/auth/guards.ts';
+import { idParamsSchema } from '../../shared/http/schemas.ts';
 import {
-  appointmentIdParamsSchema,
   availableSlotsQuerySchema,
   availableSlotsResponseSchema,
   createAppointmentBodySchema,
@@ -56,13 +56,13 @@ export const appointmentsRoutes: FastifyPluginCallbackZod<FeaturePluginOptions> 
 
   app.get(
     '/appointments/:id',
-    { schema: { params: appointmentIdParamsSchema, response: { 200: staffAppointmentSchema } } },
+    { schema: { params: idParamsSchema, response: { 200: staffAppointmentSchema } } },
     (request) => appointmentsService.getById(request.params.id),
   );
 
   app.post(
     '/appointments/:id/cancel',
-    { schema: { params: appointmentIdParamsSchema, response: { 200: staffAppointmentSchema } } },
+    { schema: { params: idParamsSchema, response: { 200: staffAppointmentSchema } } },
     (request) => appointmentsService.cancel(request.params.id),
   );
 

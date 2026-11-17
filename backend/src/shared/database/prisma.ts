@@ -21,6 +21,7 @@ function readPath(value: unknown, path: readonly string[]): unknown {
 /**
  * True for a unique constraint violation (P2002). With `constraint`, only when that specific
  * index/constraint was violated — the pg driver adapter reports its name in the error metadata.
+ * That metadata path is adapter-internal; the T1 concurrency test fails if it ever changes.
  */
 export function isUniqueConstraintViolation(error: unknown, constraint?: string): boolean {
   if (!(error instanceof Prisma.PrismaClientKnownRequestError) || error.code !== 'P2002') {

@@ -3,7 +3,8 @@ import { Role } from '../../generated/prisma/enums.ts';
 
 export const loginBodySchema = z.object({
   email: z.email().transform((email) => email.toLowerCase()),
-  password: z.string().min(1),
+  // bcrypt only uses the first 72 bytes; a bound also avoids hashing huge payloads.
+  password: z.string().min(1).max(128),
 });
 
 export const authUserSchema = z.object({

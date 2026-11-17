@@ -16,7 +16,7 @@ const LAST_BUSINESS_WEEKDAY = 5; // ISO weekday: 1 = Monday … 5 = Friday
 
 export type SlotViolation = 'INVALID_SLOT' | 'OUTSIDE_BUSINESS_HOURS' | 'IN_PAST';
 
-function isBusinessDay(date: CalendarDate): boolean {
+export function isBusinessDay(date: CalendarDate): boolean {
   return toClinicParts(clinicDateTimeToUtc(date, '12:00')).weekday <= LAST_BUSINESS_WEEKDAY;
 }
 

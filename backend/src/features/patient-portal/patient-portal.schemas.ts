@@ -2,8 +2,6 @@ import { z } from 'zod';
 import { AppointmentStatus } from '../../generated/prisma/enums.ts';
 import { examTypeSchema } from '../catalog/catalog.schemas.ts';
 
-export const patientAppointmentParamsSchema = z.object({ id: z.uuid() });
-
 /**
  * The patient's view of an appointment. Only says whether a *published* report exists: drafts are
  * invisible to patients, so the response never reveals whether one is being written.

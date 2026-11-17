@@ -1,13 +1,5 @@
 import type { AppDependencies } from '../../shared/app-dependencies.ts';
-import { AppError } from '../../shared/errors/app-error.ts';
-
-export const patientPortalErrors = {
-  /**
-   * Same answer whether the appointment belongs to another patient, has no report or only a
-   * draft: a patient cannot even learn that someone else's report exists (T2, T3).
-   */
-  reportNotFound: () => new AppError(404, 'REPORT_NOT_FOUND', 'Laudo não encontrado.'),
-};
+import { commonErrors } from '../../shared/errors/app-error.ts';
 
 /**
  * Every query is scoped by the patient id taken from the token, inside the query itself
@@ -38,8 +30,10 @@ export function createPatientPortalService({ db }: Pick<AppDependencies, 'db'>) 
           appointment: { select: { id: true, scheduledAt: true, examType: true } },
         },
       });
-      // A PUBLISHED report always has publishedAt (CHECK constraint); the check narrows the type.
-      if (!report?.publishedAt) throw patientPortalErrors.reportNotFound();
+      // Same answer whether the appointment belongs to another patient, has no report or only a
+      // draft, so a patient cannot even learn that someone else's report exists (T2, T3). A
+      // PUBLISHED report always has publishedAt (CHECK constraint); the check narrows the type.
+      if (!report?.publishedAt) throw commonErrors.reportNotFound();
 
       return {
         id: report.id,

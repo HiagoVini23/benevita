@@ -1,7 +1,10 @@
 /**
  * Demo data. Reference data and users are upserted (idempotent); appointments and reports are
- * recreated on every run, relative to today, so the demo always has past and upcoming exams.
+ * recreated on every run, relative to today, so the demo always has: exams today (the staff
+ * screen opens on today), a past exam without report (to write and publish one), a published
+ * report, a draft, upcoming exams and a cancellation.
  */
+import { isBusinessDay } from '../src/features/appointments/appointment-rules.ts';
 import { hashPassword } from '../src/features/auth/password.ts';
 import type { Role } from '../src/generated/prisma/enums.ts';
 import { loadEnv } from '../src/shared/config/env.ts';
@@ -24,8 +27,7 @@ function businessDay(from: CalendarDate, offset: number): CalendarDate {
   let remaining = Math.abs(offset);
   while (remaining > 0) {
     date = addDays(date, step);
-    const weekday = toClinicParts(clinicDateTimeToUtc(date, '12:00')).weekday;
-    if (weekday <= 5) remaining -= 1;
+    if (isBusinessDay(date)) remaining -= 1;
   }
   return date;
 }
@@ -109,8 +111,28 @@ async function main() {
     },
   });
 
+  // Exams today only on business days: the clinic does not work on weekends.
+  const todayExams = isBusinessDay(today)
+    ? [
+        { patientId: ana.id, examTypeId: mri.id, scheduledAt: clinicDateTimeToUtc(today, '08:30') },
+        {
+          patientId: bruno.id,
+          examTypeId: xRay.id,
+          scheduledAt: clinicDateTimeToUtc(today, '11:00'),
+        },
+        {
+          patientId: carla.id,
+          examTypeId: ultrasound.id,
+          scheduledAt: clinicDateTimeToUtc(today, '16:00'),
+        },
+      ]
+    : [];
+
   await db.appointment.createMany({
     data: [
+      ...todayExams,
+      // Past exam without a report yet: the demo case for writing and publishing one.
+      { patientId: carla.id, examTypeId: ultrasound.id, scheduledAt: at(-1, '09:00') },
       { patientId: ana.id, examTypeId: ultrasound.id, scheduledAt: at(1, '10:00') },
       { patientId: carla.id, examTypeId: xRay.id, scheduledAt: at(1, '14:00') },
       { patientId: carla.id, examTypeId: ct.id, scheduledAt: at(2, '08:30') },

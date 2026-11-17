@@ -2,8 +2,6 @@ import { z } from 'zod';
 import { AppointmentStatus, ReportStatus } from '../../generated/prisma/enums.ts';
 import { examTypeSchema } from '../catalog/catalog.schemas.ts';
 
-export const appointmentIdParamsSchema = z.object({ id: z.uuid() });
-
 export const listAppointmentsQuerySchema = z.object({
   date: z.iso.date().optional(),
   patientId: z.uuid().optional(),

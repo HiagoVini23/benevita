@@ -105,7 +105,8 @@ model Report {
   appointment  Appointment  @relation(fields: [appointmentId], references: [id])
   professional Professional @relation(fields: [professionalId], references: [id])
   createdBy    User         @relation("ReportCreatedBy", fields: [createdById], references: [id])
-  publishedBy  User?        @relation("ReportPublishedBy", fields: [publishedById], references: [id])
+  // Restrict (not the default SetNull): a published report must keep its publisher (CHECK).
+  publishedBy  User?        @relation("ReportPublishedBy", fields: [publishedById], references: [id], onDelete: Restrict)
 
   @@map("reports")
 }

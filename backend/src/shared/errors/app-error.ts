@@ -19,16 +19,16 @@ export class AppError extends Error {
 }
 
 /**
- * Display names of the domain resources, used in user-facing messages. A const object (not a TS
+ * Display names of the domain resources, used in user-facing messages. A const map (not a TS
  * enum, which `erasableSyntaxOnly` forbids) gives the same single source and type safety.
  */
 export type Resource = 'appointment' | 'patient' | 'examType' | 'professional';
 
-const RESOURCES: Record<Resource, { label: string; gender: 'm' | 'f' }> = {
-  appointment: { label: 'Agendamento', gender: 'm' },
-  patient: { label: 'Paciente', gender: 'm' },
-  examType: { label: 'Tipo de exame', gender: 'm' },
-  professional: { label: 'Profissional', gender: 'm' },
+const RESOURCE_LABELS: Record<Resource, string> = {
+  appointment: 'Agendamento',
+  patient: 'Paciente',
+  examType: 'Tipo de exame',
+  professional: 'Profissional',
 };
 
 export const commonErrors = {
@@ -40,11 +40,13 @@ export const commonErrors = {
   forbidden: () =>
     new AppError(403, 'FORBIDDEN', 'Você não tem permissão para acessar este recurso.'),
   /** `notFound('appointment')` → "Agendamento não encontrado." */
-  notFound: (resource: Resource) => {
-    const { label, gender } = RESOURCES[resource];
-    const found = gender === 'm' ? 'encontrado' : 'encontrada';
-    return new AppError(404, 'NOT_FOUND', `${label} não ${found}.`);
-  },
+  notFound: (resource: Resource) =>
+    new AppError(404, 'NOT_FOUND', `${RESOURCE_LABELS[resource]} não encontrado.`),
+  /**
+   * Distinct code so clients can tell "no report" from "no such appointment". The patient portal
+   * also uses it for another patient's report and for drafts, so existence is never revealed.
+   */
+  reportNotFound: () => new AppError(404, 'REPORT_NOT_FOUND', 'Laudo não encontrado.'),
   routeNotFound: (method: string, url: string) =>
     new AppError(404, 'NOT_FOUND', `Rota ${method} ${url} não encontrada.`),
   internal: () => new AppError(500, 'INTERNAL_SERVER_ERROR', 'Erro interno do servidor.'),
