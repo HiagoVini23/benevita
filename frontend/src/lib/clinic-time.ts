@@ -1,8 +1,12 @@
+import { format, isValid, parse } from 'date-fns';
+
 /**
  * All dates are shown in the clinic time zone, regardless of the browser's zone, so staff and
  * patients always see the same wall-clock time. The API exchanges instants as ISO UTC strings.
  */
 export const CLINIC_TIME_ZONE = 'America/Sao_Paulo';
+
+const BRAZILIAN_DATE_FORMAT = 'dd/MM/yyyy';
 
 const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
   timeZone: CLINIC_TIME_ZONE,
@@ -51,6 +55,23 @@ export function formatDateTime(isoInstant: string): string {
 export function formatCalendarDate(calendarDate: string): string {
   const [year, month, day] = calendarDate.split('-');
   return `${day ?? ''}/${month ?? ''}/${year ?? ''}`;
+}
+
+/** Keeps only digits and inserts the slashes while typing: `15071992` → `15/07/1992`. */
+export function maskBrazilianDate(text: string): string {
+  const digits = text.replace(/\D/g, '').slice(0, 8);
+  return [digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 8)]
+    .filter((part) => part !== '')
+    .join('/');
+}
+
+/** `15/07/1992` → `1992-07-15`, or `null` when incomplete or not a real calendar date. */
+export function parseBrazilianDate(text: string): string | null {
+  // date-fns rejects impossible dates such as 30/02 (strict parsing yields an invalid Date).
+  const parsed = parse(text, BRAZILIAN_DATE_FORMAT, new Date());
+  return text.length === BRAZILIAN_DATE_FORMAT.length && isValid(parsed)
+    ? format(parsed, 'yyyy-MM-dd')
+    : null;
 }
 
 /**

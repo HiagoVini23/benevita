@@ -3,7 +3,7 @@
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/manrope';
 
-/* Light theme only. Bind `dark:` utilities to a class we never set, so OS dark mode cannot half-apply them. */
+/* Dark mode is class-based (`.dark` on <html>), driven by the theme toggle, not by the OS directly. */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -57,6 +57,12 @@
   --brand-orvalho: #e6faf6;
   --brand-clareira: #f6fbfb;
 
+  /* Logo colors per theme: the stem follows the text, leaves stay teal. */
+  --mark-stem: var(--brand-seiva);
+  --mark-leaf: var(--brand-broto);
+  --mark-deep: var(--brand-pulso);
+  --mark-vein: #ffffff;
+
   --background: var(--brand-clareira);
   --foreground: var(--brand-seiva);
   --card: #ffffff;
@@ -91,6 +97,47 @@
   --sidebar-ring: var(--brand-broto);
 }
 
+/* Dark theme: the same palette at night. Clareira becomes the deep background, Seiva and
+   Orvalho swap roles, and the teal tones gain luminance to keep contrast. */
+.dark {
+  --background: #0b1f27;
+  --foreground: #e6faf6;
+  --card: #0f2832;
+  --card-foreground: #e6faf6;
+  --popover: #0f2832;
+  --popover-foreground: #e6faf6;
+  --primary: #22b8cf;
+  --primary-foreground: #0b1f27;
+  --secondary: #12333d;
+  --secondary-foreground: #e6faf6;
+  --muted: #12333d;
+  --muted-foreground: #9dbcc4;
+  --accent: #12333d;
+  --accent-foreground: #e6faf6;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: #1d3d48;
+  --input: #234652;
+  --ring: #2dd4bf;
+  --chart-1: #2dd4bf;
+  --chart-2: #22b8cf;
+  --chart-3: #67e8f9;
+  --chart-4: #0e7490;
+  --chart-5: #e6faf6;
+  --sidebar: #0f2832;
+  --sidebar-foreground: #e6faf6;
+  --sidebar-primary: #22b8cf;
+  --sidebar-primary-foreground: #0b1f27;
+  --sidebar-accent: #12333d;
+  --sidebar-accent-foreground: #e6faf6;
+  --sidebar-border: #1d3d48;
+  --sidebar-ring: #2dd4bf;
+
+  --mark-stem: #e6faf6;
+  --mark-leaf: #2dd4bf;
+  --mark-deep: #22b8cf;
+  --mark-vein: #0b1f27;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -100,5 +147,9 @@
   }
   html {
     @apply font-sans;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
   }
 }

@@ -1,0 +1,49 @@
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import {
+  readSavedTheme,
+  systemTheme,
+  THEME_STORAGE_KEY,
+  ThemeContext,
+  type Theme,
+  type ThemeContextValue,
+} from '@/lib/theme-context';
+
+/**
+ * Light/dark theme. Follows the system until the user picks one with the toggle; the choice is
+ * then remembered in this browser.
+ */
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setTheme] = useState<Theme>(() => readSavedTheme() ?? systemTheme());
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
+
+  // Until the user picks a theme, follow changes of the system preference.
+  useEffect(() => {
+    if (readSavedTheme() !== null || typeof window.matchMedia !== 'function') return;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const follow = () => {
+      if (readSavedTheme() === null) setTheme(media.matches ? 'dark' : 'light');
+    };
+    media.addEventListener('change', follow);
+    return () => {
+      media.removeEventListener('change', follow);
+    };
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((current) => {
+      const next = current === 'dark' ? 'light' : 'dark';
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, next);
+      } catch {
+        // Storage blocked: the theme still changes, it just is not remembered.
+      }
+      return next;
+    });
+  }, []);
+
+  const value = useMemo<ThemeContextValue>(() => ({ theme, toggleTheme }), [theme, toggleTheme]);
+  return <ThemeContext value={value}>{children}</ThemeContext>;
+}

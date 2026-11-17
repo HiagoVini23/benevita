@@ -22,6 +22,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
+import { NewExamTypeDialog } from '@/features/catalog/NewExamTypeDialog';
+import { NewPatientDialog } from '@/features/catalog/NewPatientDialog';
 import { useExamTypes } from '@/features/catalog/useCatalog';
 import { formatDateTime, formatTime } from '@/lib/clinic-time';
 import { BUSINESS_HOURS_LABEL, isBookableDate } from './booking-rules.ts';
@@ -123,7 +125,15 @@ export function NewAppointmentDialog() {
               </Alert>
             )}
             <Field>
-              <FieldLabel htmlFor="new-appointment-patient">Paciente</FieldLabel>
+              <div className="flex items-center justify-between gap-2">
+                <FieldLabel htmlFor="new-appointment-patient">Paciente</FieldLabel>
+                <NewPatientDialog
+                  onCreated={(patient) => {
+                    setPatientId(patient.id);
+                    clearErrors();
+                  }}
+                />
+              </div>
               <PatientCombobox
                 id="new-appointment-patient"
                 value={patientId}
@@ -134,7 +144,15 @@ export function NewAppointmentDialog() {
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="new-appointment-exam">Exame</FieldLabel>
+              <div className="flex items-center justify-between gap-2">
+                <FieldLabel htmlFor="new-appointment-exam">Exame</FieldLabel>
+                <NewExamTypeDialog
+                  onCreated={(examType) => {
+                    setExamTypeId(examType.id);
+                    clearErrors();
+                  }}
+                />
+              </div>
               <Select
                 items={examTypeOptions}
                 value={examTypeId}

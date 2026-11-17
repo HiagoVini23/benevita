@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   formatCalendarDate,
+  maskBrazilianDate,
+  parseBrazilianDate,
   formatDate,
   formatDateTime,
   formatTime,
@@ -23,5 +25,18 @@ describe('clinic time formatting (America/Sao_Paulo)', () => {
 
   it('formats calendar dates without time zone shifts', () => {
     expect(formatCalendarDate('1990-05-10')).toBe('10/05/1990');
+  });
+
+  it('masks typed digits as a Brazilian date', () => {
+    expect(maskBrazilianDate('1507')).toBe('15/07');
+    expect(maskBrazilianDate('15071992')).toBe('15/07/1992');
+    expect(maskBrazilianDate('15/07/1992 extra')).toBe('15/07/1992');
+  });
+
+  it('parses only complete, real Brazilian dates', () => {
+    expect(parseBrazilianDate('15/07/1992')).toBe('1992-07-15');
+    expect(parseBrazilianDate('29/02/2024')).toBe('2024-02-29');
+    expect(parseBrazilianDate('30/02/2026')).toBeNull();
+    expect(parseBrazilianDate('15/07/92')).toBeNull();
   });
 });

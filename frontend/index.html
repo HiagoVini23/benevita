@@ -5,6 +5,21 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Benevita</title>
+    <script>
+      // Apply the saved theme before the first paint to avoid a light flash in dark mode.
+      // Keep in sync with src/lib/theme-context.ts (storage key and values).
+      (function () {
+        var saved = null;
+        try {
+          saved = localStorage.getItem('benevita.theme');
+        } catch (e) {}
+        var valid = saved === 'light' || saved === 'dark';
+        var dark = valid
+          ? saved === 'dark'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (dark) document.documentElement.classList.add('dark');
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

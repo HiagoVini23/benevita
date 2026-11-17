@@ -100,4 +100,31 @@ describe('NewAppointmentDialog', () => {
     });
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
+
+  it('registers a new exam type from inside the booking form and selects it', async () => {
+    const examTypes = [{ id: 'exam-1', name: 'Raio-X' }];
+    const fetchMock = mockApi({
+      ...catalogRoutes,
+      'GET /api/exam-types': () => jsonResponse(examTypes),
+      'POST /api/exam-types': ({ body }) => {
+        const created = { id: 'exam-new', ...(body as { name: string }) };
+        examTypes.push(created);
+        return jsonResponse(created, 201);
+      },
+    });
+    const user = userEvent.setup();
+    renderWithProviders(<NewAppointmentDialog />, { user: staffUser });
+
+    await user.click(screen.getByRole('button', { name: 'Novo agendamento' }));
+    await user.click(await screen.findByRole('button', { name: 'Novo exame' }));
+    await user.type(await screen.findByLabelText('Nome do exame'), 'Mamografia');
+    await user.click(screen.getByRole('button', { name: 'Cadastrar exame' }));
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Exame')).toHaveTextContent('Mamografia');
+    });
+    // The inner form submitted on its own: the booking form did not try to submit.
+    expect(screen.queryByText('Selecione o paciente, o exame, a data e o horário.')).toBeNull();
+    expect(fetchMock.mock.calls.filter(([, init]) => init?.method === 'POST')).toHaveLength(1);
+  });
 });

@@ -1,5 +1,6 @@
 import { CircleAlertIcon, SendIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useBlocker } from 'react-router';
 import { toast } from 'sonner';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
@@ -25,6 +26,7 @@ import {
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
+import { NewProfessionalDialog } from '@/features/catalog/NewProfessionalDialog';
 import { useProfessionals } from '@/features/catalog/useCatalog';
 import { ApiError } from '@/lib/api-client';
 import { formatDateTime } from '@/lib/clinic-time';
@@ -80,6 +82,29 @@ export function ReportEditor({ appointmentId, draft, examAt, checkedAt }: Report
     draft.body !== trimmedBody ||
     draft.professional.id !== professionalId;
   const isBusy = saveDraft.isPending || publish.isPending;
+  // A brand-new report only counts as dirty once something was typed or chosen.
+  const isDirty =
+    draft === null
+      ? title.trim() !== '' || body.trim() !== '' || professionalId !== null
+      : hasUnsavedChanges;
+
+  // Leaving the page (in-app navigation) with unsaved edits asks for confirmation first.
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      isDirty && !isBusy && currentLocation.pathname !== nextLocation.pathname,
+  );
+
+  // Closing the tab or reloading: the browser shows its own confirmation.
+  useEffect(() => {
+    if (!isDirty) return;
+    const warn = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+    };
+    window.addEventListener('beforeunload', warn);
+    return () => {
+      window.removeEventListener('beforeunload', warn);
+    };
+  }, [isDirty]);
   const examHasHappened = new Date(examAt).getTime() <= checkedAt;
 
   const handleSave = async () => {
@@ -117,6 +142,30 @@ export function ReportEditor({ appointmentId, draft, examAt, checkedAt }: Report
 
   return (
     <Card>
+      <AlertDialog
+        open={blocker.state === 'blocked'}
+        onOpenChange={(open) => {
+          // Esc or a click outside means "stay": the blocked navigation is cancelled.
+          if (!open) blocker.reset?.();
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Sair sem salvar?</AlertDialogTitle>
+            <AlertDialogDescription>
+              As alterações deste laudo ainda não foram salvas e serão perdidas.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button variant="outline" onClick={() => blocker.reset?.()}>
+              Continuar editando
+            </Button>
+            <Button variant="destructive" onClick={() => blocker.proceed?.()}>
+              Sair sem salvar
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <form
         noValidate
         onSubmit={(event) => {
@@ -154,7 +203,14 @@ export function ReportEditor({ appointmentId, draft, examAt, checkedAt }: Report
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="report-professional">Profissional responsável</FieldLabel>
+              <div className="flex items-center justify-between gap-2">
+                <FieldLabel htmlFor="report-professional">Profissional responsável</FieldLabel>
+                <NewProfessionalDialog
+                  onCreated={(professional) => {
+                    setProfessionalId(professional.id);
+                  }}
+                />
+              </div>
               <Select
                 items={professionalOptions}
                 value={professionalId}

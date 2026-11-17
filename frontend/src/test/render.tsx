@@ -1,9 +1,11 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, type RenderResult } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import { MemoryRouter, Route, Routes } from 'react-router';
+import { createMemoryRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router';
 import { vi } from 'vitest';
 import { authQueryKeys, type AuthUser } from '@/features/auth/auth.api';
+import { AppToaster } from '@/components/AppToaster';
+import { ThemeProvider } from '@/components/ThemeProvider';
 import { AuthProvider } from '@/features/auth/AuthProvider';
 import { tokenStorage } from '@/lib/api-client';
 
@@ -32,7 +34,10 @@ interface RenderOptions {
   extraRoutes?: ReactNode;
 }
 
-/** Renders UI with the same providers as the app: React Query, auth and router. */
+/**
+ * Renders UI with the same providers as the app: React Query, theme, auth and a data router
+ * (needed by `useBlocker`).
+ */
 export function renderWithProviders(
   ui: ReactNode,
   { route = '/', path = '*', user, extraRoutes }: RenderOptions = {},
@@ -47,16 +52,24 @@ export function renderWithProviders(
     queryClient.setQueryData(authQueryKeys.me, user);
   }
 
+  const router = createMemoryRouter(
+    createRoutesFromElements(
+      <>
+        <Route path={path} element={ui} />
+        {extraRoutes}
+      </>,
+    ),
+    { initialEntries: [route] },
+  );
+
   const result = render(
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <MemoryRouter initialEntries={[route]}>
-          <Routes>
-            <Route path={path} element={ui} />
-            {extraRoutes}
-          </Routes>
-        </MemoryRouter>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+        <AppToaster />
+      </ThemeProvider>
     </QueryClientProvider>,
   );
 

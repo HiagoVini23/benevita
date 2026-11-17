@@ -1,5 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Route } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import type { StaffAppointment } from '@/features/appointments/appointments.api';
 import { jsonResponse, mockApi, renderWithProviders, staffUser } from '@/test/render';
@@ -253,5 +254,94 @@ describe('ReportPage', () => {
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Publicar' })).toBeDisabled();
     expect(screen.getByLabelText('Texto do laudo')).toBeEnabled();
+  });
+
+  it('asks before leaving with unsaved changes', async () => {
+    mockApi({
+      'GET /api/appointments/appt-1': () => jsonResponse(appointment),
+      'GET /api/professionals': () => jsonResponse([professional]),
+      'GET /api/appointments/appt-1/report': () => jsonResponse(draft),
+    });
+    const user = userEvent.setup();
+    renderWithProviders(<ReportPage />, {
+      route: '/staff/appointments/appt-1/report',
+      path: '/staff/appointments/:appointmentId/report',
+      user: staffUser,
+      extraRoutes: <Route path="/staff/appointments" element={<p>Lista de agendamentos</p>} />,
+    });
+
+    await user.type(await screen.findByLabelText('Texto do laudo'), ' Complemento.');
+    await user.click(screen.getByRole('link', { name: 'Agendamentos' }));
+    expect(await screen.findByText('Sair sem salvar?')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Continuar editando' }));
+    expect(screen.getByLabelText('Texto do laudo')).toHaveValue(`${draft.body} Complemento.`);
+
+    await user.click(screen.getByRole('link', { name: 'Agendamentos' }));
+    await user.click(await screen.findByRole('button', { name: 'Sair sem salvar' }));
+    expect(await screen.findByText('Lista de agendamentos')).toBeInTheDocument();
+  });
+
+  it('leaves without asking when nothing changed', async () => {
+    mockApi({
+      'GET /api/appointments/appt-1': () => jsonResponse(appointment),
+      'GET /api/professionals': () => jsonResponse([professional]),
+      'GET /api/appointments/appt-1/report': () => jsonResponse(draft),
+    });
+    const user = userEvent.setup();
+    renderWithProviders(<ReportPage />, {
+      route: '/staff/appointments/appt-1/report',
+      path: '/staff/appointments/:appointmentId/report',
+      user: staffUser,
+      extraRoutes: <Route path="/staff/appointments" element={<p>Lista de agendamentos</p>} />,
+    });
+
+    await user.click(await screen.findByRole('link', { name: 'Agendamentos' }));
+    expect(await screen.findByText('Lista de agendamentos')).toBeInTheDocument();
+  });
+
+  it('registers a professional from inside the report form and selects it', async () => {
+    const newProfessional = {
+      id: 'prof-new',
+      name: 'Dr. Paulo Reis',
+      crm: 'CRM-SP 654321',
+      specialty: 'Ultrassonografia',
+    };
+    const professionals = [professional];
+    const fetchMock = mockApi({
+      'GET /api/appointments/appt-1': () => jsonResponse(appointment),
+      'GET /api/professionals': () => jsonResponse(professionals),
+      'GET /api/appointments/appt-1/report': notFound,
+      'POST /api/professionals': () => {
+        professionals.push(newProfessional);
+        return jsonResponse(newProfessional, 201);
+      },
+    });
+    const user = userEvent.setup();
+    renderPage();
+
+    await user.click(await screen.findByRole('button', { name: 'Novo profissional' }));
+    await user.type(await screen.findByLabelText('Nome'), newProfessional.name);
+    await user.type(screen.getByLabelText('Número do CRM'), 'CRM 654.321');
+    await user.click(screen.getByLabelText('UF'));
+    await user.click(await screen.findByRole('option', { name: 'SP' }));
+    await user.type(screen.getByLabelText('Especialidade'), newProfessional.specialty);
+    await user.click(screen.getByRole('button', { name: 'Cadastrar profissional' }));
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Profissional responsável')).toHaveTextContent('Dr. Paulo Reis');
+    });
+    // Only the digits are sent; the API builds the canonical "CRM-SP 654321".
+    const post = fetchMock.mock.calls.find(
+      ([url, init]) => url === '/api/professionals' && init?.method === 'POST',
+    );
+    expect(post?.[1]?.body).toBe(
+      JSON.stringify({
+        name: 'Dr. Paulo Reis',
+        crmNumber: '654321',
+        crmState: 'SP',
+        specialty: 'Ultrassonografia',
+      }),
+    );
   });
 });
