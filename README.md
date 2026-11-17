@@ -85,10 +85,36 @@ O banco armazena os instantes em **UTC** e a API troca datas em ISO 8601 UTC. A 
 
 ## Limitações e pendências
 
-- Token no `localStorage` (simples; em produção, cookie `httpOnly` com proteção CSRF), sem limite de tentativas de login nem renovação de token.
+**Limitações atuais**
+
+- Token JWT no `localStorage`, sem renovação nem limite de tentativas de login.
 - Listagem de agendamentos sem paginação.
 - Sem status "realizado" nem reagendamento; cadastros sem edição ou desativação.
-- Fora do escopo pedido: PDF do laudo, anexos e assinatura digital.
+
+**Próximos passos**
+
+_Segurança e conformidade_
+
+- **SSO** (OIDC/SAML) para a equipe e **MFA** (TOTP ou WebAuthn).
+- Sessão em cookie `httpOnly` com refresh token rotativo, revogação de sessões e rate limiting no login.
+- **LGPD:** dados de saúde são dados sensíveis. Trilha de auditoria de acesso aos laudos (quem abriu e quando), política de retenção e anonimização, e exportação dos dados do paciente.
+- Perfis mais granulares: recepção agenda, médico escreve e publica o laudo.
+- Primeiro acesso do paciente por convite (link para criar a própria senha) em vez de senha inicial.
+
+_Produto_
+
+- **PDF do laudo** com QR code de verificação e **assinatura digital ICP-Brasil** (certificado A1/A3).
+- **Anexos e imagens** em armazenamento de objetos com URL assinada e integração com PACS/DICOM.
+- Agenda mais completa: status "realizado" e "não compareceu", reagendamento, várias salas, duração por tipo de exame, feriados e bloqueios.
+- Notificações por e-mail ou WhatsApp: lembrete do exame e aviso de laudo publicado.
+- Interoperabilidade com outros sistemas de saúde via **HL7 FHIR**.
+
+_Engenharia_
+
+- **Paginação no backend** por cursor (o UUID v7 já é ordenado no tempo) e filtros por período e status.
+- CI/CD rodando `npm run check` e testes ponta a ponta com Playwright.
+- Documentação OpenAPI gerada dos schemas Zod que já validam as rotas.
+- Observabilidade: logs estruturados, métricas e tracing (OpenTelemetry).
 
 ## Tempo dedicado
 
