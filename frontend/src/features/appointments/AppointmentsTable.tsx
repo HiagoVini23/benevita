@@ -1,6 +1,4 @@
 import { FileTextIcon } from 'lucide-react';
-import { Link } from 'react-router';
-import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -9,10 +7,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { ButtonLink } from '@/components/ButtonLink';
+import { AppointmentStatusBadge, ReportStatusBadge } from '@/components/StatusBadges';
 import { formatDate, formatTime } from '@/lib/clinic-time';
 import type { StaffAppointment } from './appointments.api.ts';
 import { CancelAppointmentButton } from './CancelAppointmentButton.tsx';
-import { AppointmentStatusBadge, ReportStatusBadge } from '@/components/StatusBadges';
 
 function canCancel(appointment: StaffAppointment): boolean {
   return appointment.status === 'SCHEDULED' && appointment.report?.status !== 'PUBLISHED';
@@ -71,15 +70,14 @@ export function AppointmentsTable({ appointments }: { appointments: StaffAppoint
               <TableCell>
                 <div className="flex justify-end gap-1">
                   {reportLabel !== null && (
-                    <Button
+                    <ButtonLink
                       variant="outline"
                       size="sm"
-                      nativeButton={false}
-                      render={<Link to={`/staff/appointments/${appointment.id}/report`} />}
+                      to={`/staff/appointments/${appointment.id}/report`}
                     >
                       <FileTextIcon />
                       {reportLabel}
-                    </Button>
+                    </ButtonLink>
                   )}
                   {canCancel(appointment) && <CancelAppointmentButton appointment={appointment} />}
                 </div>

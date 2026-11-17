@@ -1,11 +1,11 @@
 import { ArrowLeftIcon, CircleAlertIcon, InfoIcon } from 'lucide-react';
-import { Link, Navigate, useParams } from 'react-router';
+import { Navigate, useParams } from 'react-router';
+import { ButtonLink } from '@/components/ButtonLink';
 import { Loading } from '@/components/Loading';
 import { PageHeader } from '@/components/PageHeader';
 import { ReportDocument } from '@/components/ReportDocument';
 import { AppointmentStatusBadge, ReportStatusBadge } from '@/components/StatusBadges';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
 import { useAppointment } from '@/features/appointments/useAppointments';
 import { formatDateTime } from '@/lib/clinic-time';
 import { ReportEditor } from './ReportEditor.tsx';
@@ -13,16 +13,10 @@ import { useReport } from './useReport.ts';
 
 function BackLink() {
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      className="mb-4 -ml-2"
-      nativeButton={false}
-      render={<Link to="/staff/appointments" />}
-    >
+    <ButtonLink variant="ghost" size="sm" className="mb-4 -ml-2" to="/staff/appointments">
       <ArrowLeftIcon />
       Agendamentos
-    </Button>
+    </ButtonLink>
   );
 }
 

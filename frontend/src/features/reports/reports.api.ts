@@ -29,7 +29,9 @@ export const reportsApi = {
   /** The appointment's report, or `null` when none was created yet. */
   async get(appointmentId: string): Promise<StaffReport | null> {
     try {
-      return await apiRequest<StaffReport>(`/appointments/${appointmentId}/report`);
+      return await apiRequest<StaffReport>(
+        `/appointments/${encodeURIComponent(appointmentId)}/report`,
+      );
     } catch (error) {
       // Only a missing report means "not created yet"; a missing appointment is a real error.
       if (error instanceof ApiError && error.code === 'REPORT_NOT_FOUND') return null;
@@ -37,10 +39,12 @@ export const reportsApi = {
     }
   },
   saveDraft: (appointmentId: string, input: SaveDraftInput) =>
-    apiRequest<StaffReport>(`/appointments/${appointmentId}/report`, {
+    apiRequest<StaffReport>(`/appointments/${encodeURIComponent(appointmentId)}/report`, {
       method: 'PUT',
       body: input,
     }),
   publish: (appointmentId: string) =>
-    apiRequest<StaffReport>(`/appointments/${appointmentId}/report/publish`, { method: 'POST' }),
+    apiRequest<StaffReport>(`/appointments/${encodeURIComponent(appointmentId)}/report/publish`, {
+      method: 'POST',
+    }),
 };

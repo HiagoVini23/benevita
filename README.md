@@ -143,6 +143,7 @@ Os testes do backend são de integração contra um **PostgreSQL real**, num ban
 
 - **Listagem sem paginação:** `GET /api/appointments` sem filtro de data devolve todos os agendamentos. Suficiente para a demonstração; em produção, entraria paginação por cursor (o UUID v7 já é ordenado no tempo).
 - **Aviso do driver nos testes:** o `@prisma/adapter-pg` emite um `DeprecationWarning` do `pg` (consultas concorrentes na mesma conexão de transação) em escritas aninhadas do Prisma. É interno da biblioteca e não afeta o comportamento.
+- **Sem status "realizado":** o modelo tem apenas agendado e cancelado (o desafio não pede registrar a realização). No portal do paciente, exames passados aparecem no histórico sem o selo "Agendado", identificados pelo laudo (disponível ou ainda não).
 - **Regras de agenda espelhadas na UI:** o calendário bloqueia fins de semana e dias passados só para orientar o usuário; quem valida é o backend.
 
 ## Pendências
@@ -152,6 +153,6 @@ Os testes do backend são de integração contra um **PostgreSQL real**, num ban
 - [x] Seed com dados fictícios e contas de demonstração
 - [x] Agendamentos (lista com filtros, horários livres, novo agendamento, cancelamento)
 - [x] Laudos (rascunho, edição, publicação com confirmação)
-- [ ] Área do paciente
-- [ ] Testes dos cenários obrigatórios
+- [x] Área do paciente (meus exames, leitura de laudos publicados)
+- [x] Testes dos cenários obrigatórios (T1–T5)
 - [ ] Limitações conhecidas e tempo dedicado

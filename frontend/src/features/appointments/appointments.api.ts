@@ -40,11 +40,13 @@ export const appointmentQueryKeys = {
 export const appointmentsApi = {
   list: ({ date, patientId }: AppointmentFilters) =>
     apiRequest<StaffAppointment[]>('/appointments', { query: { date, patientId } }),
-  get: (id: string) => apiRequest<StaffAppointment>(`/appointments/${id}`),
+  get: (id: string) => apiRequest<StaffAppointment>(`/appointments/${encodeURIComponent(id)}`),
   availableSlots: (date: string) =>
     apiRequest<AvailableSlots>('/appointments/available-slots', { query: { date } }),
   create: (input: CreateAppointmentInput) =>
     apiRequest<StaffAppointment>('/appointments', { method: 'POST', body: input }),
   cancel: (id: string) =>
-    apiRequest<StaffAppointment>(`/appointments/${id}/cancel`, { method: 'POST' }),
+    apiRequest<StaffAppointment>(`/appointments/${encodeURIComponent(id)}/cancel`, {
+      method: 'POST',
+    }),
 };
