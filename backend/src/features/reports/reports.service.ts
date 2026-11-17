@@ -27,12 +27,7 @@ const staffReportInclude = {
   publishedBy: { select: { id: true, name: true } },
 } as const;
 
-/**
- * Every write starts with `lockAppointment`, the same row lock used by cancellation. Saving,
- * publishing and canceling the same appointment therefore run one at a time, and each sees the
- * other's committed state: a report is never published on a canceled appointment (L5) and a
- * canceled appointment never ends up with a published report (L6).
- */
+/** Every write starts with `lockAppointment`, serializing it with cancellation (L5/L6). */
 export function createReportsService({ db, clock }: Pick<AppDependencies, 'db' | 'clock'>) {
   async function findReport(client: Database | Transaction, appointmentId: string) {
     return client.report.findUnique({ where: { appointmentId }, include: staffReportInclude });
@@ -51,7 +46,7 @@ export function createReportsService({ db, clock }: Pick<AppDependencies, 'db' |
       return report;
     },
 
-    /** Creates the appointment's single report (L1) or updates it while it is a draft (L2/L4). */
+    /** One report per appointment (L1), editable only as a draft (L2/L4). */
     saveDraft(appointmentId: string, input: SaveDraftBody, user: AuthUser) {
       return db.$transaction(async (tx) => {
         const appointment = await lockAppointment(tx, appointmentId);
@@ -83,7 +78,7 @@ export function createReportsService({ db, clock }: Pick<AppDependencies, 'db' |
       });
     },
 
-    /** Makes the draft visible to the patient and freezes it, recording when and by whom (L7). */
+    /** Freezes the report and records when and by whom (L7). */
     publish(appointmentId: string, user: AuthUser) {
       return db.$transaction(async (tx) => {
         const appointment = await lockAppointment(tx, appointmentId);

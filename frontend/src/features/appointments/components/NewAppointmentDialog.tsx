@@ -54,8 +54,7 @@ export function NewAppointmentDialog() {
     value: id,
     label: name,
   }));
-  // A slot that left the free list (taken by someone else, or now in the past) is no longer a
-  // valid choice, so it is dropped instead of being resubmitted.
+  // A slot that left the free list (taken, or now past) is dropped instead of resubmitted.
   const selectedSlot = slotOptions.some((option) => option.value === slot) ? slot : null;
 
   const clearErrors = () => {
@@ -198,8 +197,7 @@ export function NewAppointmentDialog() {
                   value={selectedSlot}
                   onValueChange={(nextSlot) => {
                     setSlot(nextSlot);
-                    // The select also reports null when the chosen slot leaves the free list after a failed
-                    // booking; only a real choice should dismiss the error that explains why.
+                    // null also comes when the slot leaves the list; keep the error explaining why.
                     if (nextSlot !== null) clearErrors();
                   }}
                   disabled={date === undefined || slotOptions.length === 0}

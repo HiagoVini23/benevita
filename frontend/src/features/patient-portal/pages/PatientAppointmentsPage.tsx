@@ -40,10 +40,7 @@ function ReportAction({ appointment }: ReportActionProps) {
 interface AppointmentListProps {
   title: string;
   items: PatientAppointment[];
-  /**
-   * The system has no "performed" status, so a past exam is still SCHEDULED. In the history
-   * only cancellations get a badge; showing "Agendado" for a past exam would be misleading.
-   */
+  /** No "performed" status exists, so a past exam is still SCHEDULED: only cancellations get a badge. */
   showScheduledBadge: boolean;
 }
 

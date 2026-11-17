@@ -1,10 +1,6 @@
 import { calendarDateToPickerDate, todayInClinic } from '@/lib/clinic-time';
 
-/*
- * UX mirror of the scheduling rules. The source of truth is the backend
- * (backend/src/features/appointments/appointments.rules.ts), which validates every booking; these
- * values only shape the UI (blocked calendar days, help text) and must follow it if it changes.
- */
+// UX mirror of backend/src/features/appointments/appointments.rules.ts, which validates bookings.
 const BUSINESS_WEEKDAYS = new Set([1, 2, 3, 4, 5]); // Monday … Friday (Date#getDay)
 
 export const BUSINESS_HOURS_LABEL =

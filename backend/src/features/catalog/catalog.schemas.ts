@@ -53,7 +53,6 @@ export const BRAZILIAN_STATES = [
   'TO',
 ] as const;
 
-/** Free text is trimmed, so values are never stored with leading or trailing spaces. */
 const requiredText = (max = NAME_MAX_LENGTH) => z.string().trim().min(1).max(max);
 
 /** A patient always gets a login: the clinic sets an initial password and hands it over. */
@@ -70,8 +69,7 @@ export const createExamTypeBodySchema = z.object({
 
 export const createProfessionalBodySchema = z.object({
   name: requiredText(),
-  // A CRM is a number registered in a state. The API takes both parts and stores one canonical
-  // text ("CRM-SP 123456"), so the same CRM can never be written in two different ways.
+  // Stored as one canonical text ("CRM-SP 123456"), so a CRM cannot be written two ways.
   crmNumber: z
     .string()
     .trim()

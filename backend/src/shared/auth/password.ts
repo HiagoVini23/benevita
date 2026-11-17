@@ -13,10 +13,7 @@ export function verifyPassword(password: string, hash: string): Promise<boolean>
 
 let unknownUserHash: Promise<string> | undefined;
 
-/**
- * Hash compared when the e-mail does not exist, so an unknown e-mail costs the same bcrypt work
- * as a wrong password and response time does not reveal which accounts exist.
- */
+/** Compared for unknown e-mails, so response time does not reveal which accounts exist. */
 export function unknownUserPasswordHash(): Promise<string> {
   unknownUserHash ??= hashPassword(randomUUID());
   return unknownUserHash;

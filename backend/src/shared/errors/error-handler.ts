@@ -34,8 +34,7 @@ export function errorHandler(
     return sendError(reply, commonErrors.validation(), error.validation);
   }
 
-  // Framework-level client errors keep their status but get a stable code and a pt-BR message;
-  // the original (English, internal) details only go to the log.
+  // Framework client errors get a stable code and pt-BR message; internal details only go to the log.
   if (error.statusCode !== undefined && error.statusCode < 500) {
     request.log.info({ err: error }, 'Request rejected by the framework');
     return sendError(reply, commonErrors.badRequest(error.statusCode));

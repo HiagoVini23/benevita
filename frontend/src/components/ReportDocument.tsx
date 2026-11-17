@@ -10,10 +10,6 @@ interface ReportDocumentProps {
   footer?: ReactNode;
 }
 
-/**
- * Read-only rendering of a report, laid out like the document a patient receives. Used by the
- * staff report page and the patient portal.
- */
 export function ReportDocument({ title, body, professional, footer }: ReportDocumentProps) {
   return (
     <Card>

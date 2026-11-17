@@ -4,10 +4,7 @@ import type { Role } from '@/features/auth/auth.api';
 import { homePathFor, useAuth } from '@/features/auth/auth.context';
 import { SessionError } from './SessionError.tsx';
 
-/**
- * Route guard for UX only: it decides which screens to show. Authorization is enforced by the
- * backend on every request.
- */
+/** UX only: authorization is enforced by the backend. */
 export function RequireRole({ role }: { role: Role }) {
   const { user, status } = useAuth();
   const location = useLocation();

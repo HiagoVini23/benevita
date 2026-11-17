@@ -5,11 +5,11 @@ import {
   type WallTime,
 } from '../../shared/time/clinic-time.ts';
 
-/** Single exam room with fixed 30-minute slots, regardless of the exam type. */
+/** Single room, fixed slots regardless of the exam type. */
 export const SLOT_DURATION_MINUTES = 30;
 const SLOT_DURATION_MS = SLOT_DURATION_MINUTES * 60_000;
 
-/** Business hours in the clinic time zone: Monday–Friday, 08:00–18:00 (last slot starts 17:30). */
+/** Clinic time zone, Monday–Friday; the last slot starts at 17:30. */
 const FIRST_SLOT: WallTime = '08:00';
 const LAST_SLOT: WallTime = '17:30';
 const LAST_BUSINESS_WEEKDAY = 5; // ISO weekday: 1 = Monday … 5 = Friday
@@ -36,16 +36,12 @@ function wallTimes(): WallTime[] {
 
 const BUSINESS_WALL_TIMES = wallTimes();
 
-/** Every bookable slot start of a clinic day (empty on weekends), as UTC instants. */
 export function businessSlotsOf(date: CalendarDate): Date[] {
   if (!isBusinessDay(date)) return [];
   return BUSINESS_WALL_TIMES.map((time) => clinicDateTimeToUtc(date, time));
 }
 
-/**
- * Checks whether an instant can be booked. Order matters for the message the user sees:
- * a malformed slot first, then business hours, then the past.
- */
+/** Order matters for the message shown: malformed slot, then business hours, then the past. */
 export function findSlotViolation(scheduledAt: Date, now: Date): SlotViolation | null {
   if (scheduledAt.getTime() % SLOT_DURATION_MS !== 0) return 'INVALID_SLOT';
 

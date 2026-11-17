@@ -12,7 +12,6 @@ export async function authenticate(request: FastifyRequest): Promise<void> {
   }
 }
 
-/** preHandler that authenticates the request and enforces one of the given roles. */
 export function requireRole(...roles: Role[]) {
   return async (request: FastifyRequest): Promise<void> => {
     await authenticate(request);
@@ -20,7 +19,7 @@ export function requireRole(...roles: Role[]) {
   };
 }
 
-/** Patient id of an authenticated PATIENT. Never trust a patient id sent by the client. */
+/** Never trust a patient id sent by the client. */
 export function getPatientId(user: AuthUser): string {
   if (user.role !== 'PATIENT' || user.patientId === null) throw commonErrors.forbidden();
   return user.patientId;

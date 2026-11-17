@@ -7,10 +7,7 @@ import { PatientAppointmentsPage } from '@/features/patient-portal/pages/Patient
 import { PatientReportPage } from '@/features/patient-portal/pages/PatientReportPage';
 import { ReportPage } from '@/features/reports/pages/ReportPage';
 
-/**
- * Route tree for the data router (`createBrowserRouter`). A data router is required for
- * `useBlocker`, which guards the report editor against leaving with unsaved changes.
- */
+/** For a data router, required by `useBlocker` in the report editor. */
 export const appRoutes = (
   <>
     <Route path="/login" element={<LoginPage />} />

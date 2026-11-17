@@ -8,10 +8,7 @@ import {
   type ThemeContextValue,
 } from './theme-context.ts';
 
-/**
- * Light/dark theme. Follows the system until the user picks one with the toggle; the choice is
- * then remembered in this browser.
- */
+/** Follows the system until the user picks a theme; the choice is remembered. */
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => readSavedTheme() ?? systemTheme());
 
@@ -19,7 +16,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
-  // Until the user picks a theme, follow changes of the system preference.
   useEffect(() => {
     if (readSavedTheme() !== null || typeof window.matchMedia !== 'function') return;
     const media = window.matchMedia('(prefers-color-scheme: dark)');

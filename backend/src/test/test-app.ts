@@ -32,10 +32,7 @@ export interface TestContext {
   authHeader: (user: AuthUser) => { authorization: string };
 }
 
-/**
- * Builds the real app against the test database. Registers hooks that reset the database
- * before each test and release resources after the file. Call it at the top of a `describe`.
- */
+/** Resets the database before each test; call it at the top of a `describe`. */
 export function setupTestApp(): TestContext {
   const env = loadEnv();
   const db = createDatabase(env.DATABASE_URL);

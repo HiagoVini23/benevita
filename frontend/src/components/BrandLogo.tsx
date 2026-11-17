@@ -1,10 +1,6 @@
 import { cn } from '@/lib/utils';
 
-/**
- * Benevita mark: a B whose stem sprouts and whose bowls are two leaves; the upper leaf carries a
- * pulse line as its vein. Colors come from the theme-aware mark tokens in index.css. Use it at 32px or more;
- * below that, use the leaf-pulse icon (favicon).
- */
+/** Detailed mark for 32px or more; smaller sizes use the favicon. */
 export function BrandMark({ className }: { className?: string }) {
   return (
     // The viewBox is cropped to the drawing so the B sits at the same height as the wordmark.

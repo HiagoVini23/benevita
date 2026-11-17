@@ -24,7 +24,6 @@ export const patientUser: AuthUser = {
 };
 
 interface RenderOptions {
-  /** Initial URL. */
   route?: string;
   /** Route pattern the UI is mounted on, so `useParams` works (e.g. `/staff/appointments/:id`). */
   path?: string;
@@ -34,10 +33,7 @@ interface RenderOptions {
   extraRoutes?: ReactNode;
 }
 
-/**
- * Renders UI with the same providers as the app: React Query, theme, auth and a data router
- * (needed by `useBlocker`).
- */
+/** Same providers as the app, including a data router (needed by `useBlocker`). */
 export function renderWithProviders(
   ui: ReactNode,
   { route = '/', path = '*', user, extraRoutes }: RenderOptions = {},
@@ -76,7 +72,6 @@ export function renderWithProviders(
   return { ...result, queryClient };
 }
 
-/** Minimal JSON Response for `fetch` mocks. */
 export function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
@@ -86,10 +81,7 @@ export function jsonResponse(body: unknown, status = 200): Response {
 
 type RouteHandler = (request: { url: URL; body: unknown }) => Response;
 
-/**
- * Stubs `fetch` with a tiny router keyed by `"METHOD /path"` (query string ignored). Unknown routes
- * answer 404 so a missing mock shows up as a visible error instead of a hanging request.
- */
+/** Keyed by `"METHOD /path"`; unknown routes answer 404 so a missing mock fails visibly. */
 export function mockApi(routes: Record<string, RouteHandler>) {
   const fetchMock = vi.fn((input: string, init?: RequestInit) => {
     const url = new URL(input, 'http://localhost');

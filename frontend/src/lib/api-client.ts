@@ -26,7 +26,6 @@ export const tokenStorage = {
 
 let unauthorizedHandler: (() => void) | undefined;
 
-/** Registers what happens when an authenticated request is rejected with 401 (e.g. expired token). */
 export function setUnauthorizedHandler(handler: () => void): () => void {
   unauthorizedHandler = handler;
   return () => {
@@ -76,10 +75,7 @@ async function toApiError(response: Response): Promise<ApiError> {
   return new ApiError(response.status, 'UNEXPECTED_ERROR', 'Ocorreu um erro inesperado.');
 }
 
-/**
- * Single entry point for HTTP calls. `T` mirrors the backend contract; the backend validates
- * every response against its schema, so the payload is trusted to match.
- */
+/** `T` is trusted: the backend validates every response against its schema. */
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { method = 'GET', body, query } = options;
   const token = tokenStorage.get();
@@ -103,7 +99,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     throw await toApiError(response);
   }
 
-  // 204 No Content (and any empty body) resolves to undefined instead of failing to parse.
+  // 204 and any empty body resolve to undefined instead of failing to parse.
   const text = await response.text();
   const data: unknown = text === '' ? undefined : JSON.parse(text);
   return data as T;

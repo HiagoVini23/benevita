@@ -17,11 +17,7 @@ function canCancel(appointment: StaffAppointment): boolean {
   return appointment.status === 'SCHEDULED' && appointment.report?.status !== 'PUBLISHED';
 }
 
-/**
- * Published reports are read-only, drafts are edited, and a report can only be created while the
- * appointment is active. A canceled appointment cannot receive a report (L5), and a draft left on
- * one is not offered for editing.
- */
+/** A canceled appointment cannot receive a report (L5), so a draft left on one is not offered. */
 function reportAction(appointment: StaffAppointment): string | null {
   if (appointment.report?.status === 'PUBLISHED') return 'Ver laudo';
   if (appointment.status === 'CANCELED') return null;

@@ -2,7 +2,6 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { Prisma, PrismaClient } from '../../generated/prisma/client.ts';
 
 export type Database = PrismaClient;
-/** Client handed to `db.$transaction(async (tx) => ...)` callbacks. */
 export type Transaction = Prisma.TransactionClient;
 
 export function createDatabase(databaseUrl: string): Database {
@@ -18,11 +17,7 @@ function readPath(value: unknown, path: readonly string[]): unknown {
   return current;
 }
 
-/**
- * True for a unique constraint violation (P2002). With `constraint`, only when that specific
- * index/constraint was violated — the pg driver adapter reports its name in the error metadata.
- * That metadata path is adapter-internal; the T1 concurrency test fails if it ever changes.
- */
+/** The constraint name comes from adapter-internal metadata; the T1 test fails if that changes. */
 export function isUniqueConstraintViolation(error: unknown, constraint?: string): boolean {
   if (!(error instanceof Prisma.PrismaClientKnownRequestError) || error.code !== 'P2002') {
     return false;

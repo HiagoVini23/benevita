@@ -32,8 +32,7 @@ function ReportPageContent({ appointmentId }: { appointmentId: string }) {
 
   if (appointment.isPending || report.isPending) return <Loading />;
 
-  // Only an initial failure replaces the page: a failed background refetch keeps the data (and
-  // whatever is being typed in the editor) on screen.
+  // A failed background refetch keeps the data (and what is being typed) on screen.
   if (appointment.data === undefined || report.data === undefined) {
     return (
       <>

@@ -5,10 +5,7 @@ import { cn } from '@/lib/utils';
 
 type ButtonLinkProps = LinkProps & VariantProps<typeof buttonVariants>;
 
-/**
- * Navigation that looks like a button. It stays a real link (`<a>`, role "link") for screen
- * readers and middle-click, instead of a button rendered as an anchor.
- */
+/** A real link styled as a button, so screen readers and middle-click treat it as a link. */
 export function ButtonLink({ variant, size, className, ...props }: ButtonLinkProps) {
   return (
     <Link

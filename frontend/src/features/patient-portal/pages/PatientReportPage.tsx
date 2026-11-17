@@ -44,8 +44,7 @@ export function PatientReportPage() {
         <ArrowLeftIcon />
         Meus exames
       </ButtonLink>
-      {/* A malformed id (edited or broken link) can never match a report: same answer as any
-          unavailable report, without calling the API. */}
+      {/* A malformed id can never match: same answer as any unavailable report, no API call. */}
       {UUID_PATTERN.test(appointmentId) ? (
         <PublishedReportContent appointmentId={appointmentId} />
       ) : (

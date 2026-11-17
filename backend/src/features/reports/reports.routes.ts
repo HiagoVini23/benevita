@@ -5,7 +5,6 @@ import { idParamsSchema } from '../../shared/http/schemas.ts';
 import { saveDraftBodySchema, staffReportSchema } from './reports.schemas.ts';
 import { createReportsService } from './reports.service.ts';
 
-/** Staff side of reports, nested under the appointment that owns them (one report each). */
 export const reportsRoutes: FastifyPluginCallbackZod<FeaturePluginOptions> = (
   app,
   { deps },

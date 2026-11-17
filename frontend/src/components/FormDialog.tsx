@@ -29,10 +29,8 @@ interface FormDialogProps {
 }
 
 /**
- * Small creation form in a modal, opened from inside another form (e.g. a new exam type while
- * booking). Server errors are shown as error toasts by each dialog, which keeps the modal open
- * with the typed values and marks the offending field. The submit event is stopped here: React
- * events bubble through portals, and the outer form must not submit when the inner one does.
+ * Opened from inside another form. React events bubble through portals, so submit is stopped
+ * here to keep the outer form from submitting too.
  */
 export function FormDialog({
   triggerLabel,

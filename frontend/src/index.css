@@ -97,8 +97,7 @@
   --sidebar-ring: var(--brand-broto);
 }
 
-/* Dark theme: the same palette at night. Clareira becomes the deep background, Seiva and
-   Orvalho swap roles, and the teal tones gain luminance to keep contrast. */
+/* Dark theme: same palette, teal tones brighter to keep contrast. */
 .dark {
   --background: #0b1f27;
   --foreground: #e6faf6;
@@ -154,9 +153,7 @@
   }
 }
 
-/* Stacked dialogs (e.g. "Novo tipo de exame" over "Novo agendamento"): the dialog behind steps
-   back (smaller and dimmer) and the one in front gets a defined edge and a deeper shadow, so it is
-   always clear which one is active. Base UI sets these data attributes on the popups. */
+/* Stacked dialogs: the one behind steps back, so it is clear which is active. */
 @layer components {
   [data-slot='dialog-content'] {
     transition:

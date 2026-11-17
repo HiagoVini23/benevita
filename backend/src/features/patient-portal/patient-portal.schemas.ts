@@ -2,10 +2,7 @@ import { z } from 'zod';
 import { AppointmentStatus } from '../../generated/prisma/enums.ts';
 import { examTypeSchema } from '../catalog/catalog.schemas.ts';
 
-/**
- * The patient's view of an appointment. Only says whether a *published* report exists: drafts are
- * invisible to patients, so the response never reveals whether one is being written.
- */
+/** Only *published* reports count: a draft being written is never revealed. */
 export const patientAppointmentSchema = z.object({
   id: z.uuid(),
   scheduledAt: z.date(),
@@ -14,7 +11,7 @@ export const patientAppointmentSchema = z.object({
   hasPublishedReport: z.boolean(),
 });
 
-/** A published report as the patient reads it: no internal ids of staff users. */
+/** No internal ids of staff users. */
 export const publishedReportSchema = z.object({
   id: z.uuid(),
   title: z.string(),

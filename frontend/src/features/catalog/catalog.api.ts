@@ -1,6 +1,5 @@
 import { apiRequest } from '@/lib/api-client';
 
-/** Reference data managed by the seed; read-only in the app. */
 export interface PatientOption {
   id: string;
   name: string;

@@ -18,10 +18,7 @@ export const catalogErrors = {
     new AppError(400, 'BIRTH_DATE_IN_FUTURE', 'A data de nascimento não pode estar no futuro.'),
 };
 
-/**
- * Reference data used by staff forms: patients, exam types and professionals. Uniqueness is
- * guaranteed by the database (unique indexes); a violation becomes a clear 409.
- */
+/** Uniqueness is guaranteed by unique indexes; a violation becomes a 409. */
 export function createCatalogService({ db, clock }: Pick<AppDependencies, 'db' | 'clock'>) {
   // birth_date is a DATE column; send it as a calendar date so no time zone can shift it.
   const toPatientOption = (patient: { id: string; name: string; birthDate: Date }) => ({
@@ -72,8 +69,7 @@ export function createCatalogService({ db, clock }: Pick<AppDependencies, 'db' |
       try {
         return await db.examType.create({ data: { name } });
       } catch (error) {
-        // exam_types_name_lower_key makes "Mamografia" and "mamografia" the same name, even when
-        // both are created at the same time.
+        // exam_types_name_lower_key: case-insensitive, even for concurrent creations.
         if (
           isUniqueConstraintViolation(error, 'exam_types_name_lower_key') ||
           isUniqueConstraintViolation(error, 'exam_types_name_key')

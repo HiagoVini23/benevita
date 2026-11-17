@@ -88,13 +88,11 @@ export function ReportEditor({ appointmentId, draft, examAt, checkedAt }: Report
       ? title.trim() !== '' || body.trim() !== '' || professionalId !== null
       : hasUnsavedChanges;
 
-  // Leaving the page (in-app navigation) with unsaved edits asks for confirmation first.
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) =>
       isDirty && !isBusy && currentLocation.pathname !== nextLocation.pathname,
   );
 
-  // Closing the tab or reloading: the browser shows its own confirmation.
   useEffect(() => {
     if (!isDirty) return;
     const warn = (event: BeforeUnloadEvent) => {

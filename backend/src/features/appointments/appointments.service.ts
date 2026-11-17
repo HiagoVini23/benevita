@@ -43,7 +43,7 @@ const slotViolationErrors: Record<SlotViolation, () => AppError> = {
   IN_PAST: appointmentErrors.inPast,
 };
 
-/** Partial unique index from the init migration: one SCHEDULED appointment per slot (R2/R3). */
+/** Partial unique index (init migration): one SCHEDULED appointment per slot (R2/R3). */
 const ACTIVE_SLOT_INDEX = 'appointments_active_slot_key';
 
 const staffAppointmentInclude = {
@@ -53,9 +53,8 @@ const staffAppointmentInclude = {
 } as const;
 
 /**
- * Locks the appointment row until the transaction ends. Every operation whose rule spans the
- * appointment and its report (cancel, save draft, publish) starts with this lock, so they run one
- * at a time per appointment and each sees the other's committed result (rules L5/L6).
+ * Row lock until the transaction ends. Cancel, save draft and publish start with it, so they run
+ * one at a time per appointment and each sees the other's result (L5/L6).
  */
 interface LockedAppointment {
   id: string;
@@ -101,7 +100,6 @@ export function createAppointmentsService({ db, clock }: Pick<AppDependencies, '
       return findById(db, id);
     },
 
-    /** Future business slots of the day that no active appointment occupies. */
     async availableSlots(date: CalendarDate) {
       const { start, end } = clinicDayRange(date);
       const now = clock.now();
@@ -133,8 +131,7 @@ export function createAppointmentsService({ db, clock }: Pick<AppDependencies, '
           include: staffAppointmentInclude,
         });
       } catch (error) {
-        // The partial unique index is the real guard against double booking: two concurrent
-        // requests both pass the checks above, and the database rejects the second insert.
+        // Concurrent requests both pass the checks above; the unique index rejects the second.
         if (isUniqueConstraintViolation(error, ACTIVE_SLOT_INDEX))
           throw appointmentErrors.slotTaken();
         throw error;

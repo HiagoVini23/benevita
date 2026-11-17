@@ -22,11 +22,7 @@ import { useAppointments } from '@/features/appointments/appointments.hooks';
 
 const LOADING_ROWS = 4;
 
-/**
- * `today` follows the clinic's current day, so a page left open overnight moves to the new
- * day on its next render (e.g. the refetch when the tab regains focus) instead of showing
- * yesterday.
- */
+/** Recomputed on render, so a page left open overnight moves to the new day. */
 type DateSelection = { kind: 'today' } | { kind: 'day'; date: string } | { kind: 'all' };
 
 function resolveDate(selection: DateSelection, today: string): string | undefined {

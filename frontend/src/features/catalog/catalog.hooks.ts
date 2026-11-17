@@ -31,9 +31,8 @@ export function useProfessionals() {
 }
 
 /**
- * The created item is added to the cached list right away, so the form that opened the modal can
- * select it immediately; the list is then refetched to converge with the server. A list that was
- * never loaded is left alone (seeding it with one item would hide the others forever).
+ * Added to the cache at once so the opening form can select it. A list never loaded is left alone:
+ * seeding it with one item would hide the others.
  */
 interface NamedItem {
   id: string;

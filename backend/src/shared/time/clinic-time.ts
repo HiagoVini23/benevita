@@ -1,11 +1,7 @@
 import { tz } from '@date-fns/tz';
 import { addDays as addCalendarDays, format, getISODay, isValid, parse } from 'date-fns';
 
-/**
- * The clinic operates in a single time zone. Instants are stored and exchanged in UTC;
- * "calendar" values (a day, a wall-clock time) are always interpreted in this zone.
- * Time zone math (offsets, daylight saving time) is delegated to date-fns + @date-fns/tz.
- */
+/** Instants are UTC; calendar values (a day, a wall-clock time) are read in the clinic zone. */
 export const CLINIC_TIME_ZONE = 'America/Sao_Paulo';
 
 /** ISO calendar date, e.g. `2026-11-20`. */
@@ -22,10 +18,8 @@ export interface ClinicDateTimeParts {
 
 const CALENDAR_DATE_FORMAT = 'yyyy-MM-dd';
 const WALL_TIME_FORMAT = 'HH:mm';
-/** Every date-fns call runs "in" the clinic zone, whatever the server's own zone is. */
 const inClinic = { in: tz(CLINIC_TIME_ZONE) };
 
-/** Converts a clinic wall-clock date/time to the UTC instant it represents. */
 export function clinicDateTimeToUtc(date: CalendarDate, time: WallTime): Date {
   const zoned = parse(
     `${date} ${time}`,
@@ -37,7 +31,6 @@ export function clinicDateTimeToUtc(date: CalendarDate, time: WallTime): Date {
   return new Date(zoned.getTime());
 }
 
-/** Reads a UTC instant as clinic wall-clock values. */
 export function toClinicParts(instant: Date): ClinicDateTimeParts {
   return {
     date: format(instant, CALENDAR_DATE_FORMAT, inClinic),
@@ -46,7 +39,7 @@ export function toClinicParts(instant: Date): ClinicDateTimeParts {
   };
 }
 
-/** UTC range [start, end) covering a whole clinic calendar day. */
+/** Half-open UTC range [start, end). */
 export function clinicDayRange(date: CalendarDate): { start: Date; end: Date } {
   return {
     start: clinicDateTimeToUtc(date, '00:00'),
@@ -54,7 +47,6 @@ export function clinicDayRange(date: CalendarDate): { start: Date; end: Date } {
   };
 }
 
-/** Calendar arithmetic on clinic dates: `addDays('2026-11-30', 1)` → `2026-12-01`. */
 export function addDays(date: CalendarDate, days: number): CalendarDate {
   const day = parse(date, CALENDAR_DATE_FORMAT, new Date(), inClinic);
   if (!isValid(day)) throw new Error(`Invalid calendar date: ${date}`);

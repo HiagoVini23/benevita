@@ -1,9 +1,6 @@
 import { format, isValid, parse } from 'date-fns';
 
-/**
- * All dates are shown in the clinic time zone, regardless of the browser's zone, so staff and
- * patients always see the same wall-clock time. The API exchanges instants as ISO UTC strings.
- */
+/** Always the clinic time zone, whatever the browser's, so everyone sees the same time. */
 export const CLINIC_TIME_ZONE = 'America/Sao_Paulo';
 
 const BRAZILIAN_DATE_FORMAT = 'dd/MM/yyyy';
@@ -74,10 +71,7 @@ export function parseBrazilianDate(text: string): string | null {
     : null;
 }
 
-/**
- * Date pickers work with browser-local `Date`s at midnight. A calendar date has no time zone, so
- * converting through the local fields keeps the picked day intact in any browser zone.
- */
+/** Pickers use browser-local midnights; local fields keep the day intact in any zone. */
 export function calendarDateToPickerDate(calendarDate: string): Date {
   const [year, month, day] = calendarDate.split('-').map(Number);
   return new Date(year ?? 0, (month ?? 1) - 1, day ?? 1);
@@ -89,7 +83,7 @@ export function pickerDateToCalendarDate(date: Date): string {
   return `${String(date.getFullYear())}-${month}-${day}`;
 }
 
-/** `sexta-feira, 20 de novembro` — long label for a calendar date. */
+/** `sexta-feira, 20 de novembro` */
 export function formatCalendarDateLong(calendarDate: string): string {
   return longCalendarDateFormatter.format(calendarDateToPickerDate(calendarDate));
 }

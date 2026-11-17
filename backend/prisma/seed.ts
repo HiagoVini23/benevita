@@ -1,8 +1,7 @@
 /**
- * Demo data. Reference data and users are upserted (idempotent); appointments and reports are
- * recreated on every run, relative to today, so the demo always has: exams today (the staff
- * screen opens on today), a past exam without report (to write and publish one), a published
- * report, a draft, upcoming exams and a cancellation.
+ * Reference data and users are upserted; appointments and reports are recreated relative to
+ * today, so the demo always has exams today, a past exam to report on, a published report, a
+ * draft, upcoming exams and a cancellation.
  */
 import { isBusinessDay } from '../src/features/appointments/appointments.rules.ts';
 import { hashPassword } from '../src/shared/auth/password.ts';
@@ -111,7 +110,6 @@ async function main() {
     },
   });
 
-  // Exams today only on business days: the clinic does not work on weekends.
   const todayExams = isBusinessDay(today)
     ? [
         { patientId: ana.id, examTypeId: mri.id, scheduledAt: clinicDateTimeToUtc(today, '08:30') },
