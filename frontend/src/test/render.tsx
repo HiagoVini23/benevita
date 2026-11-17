@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, type RenderResult } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router';
+import { vi } from 'vitest';
 import { authQueryKeys, type AuthUser } from '@/features/auth/auth.api';
 import { AuthProvider } from '@/features/auth/AuthProvider';
 import { tokenStorage } from '@/lib/api-client';
@@ -68,4 +69,26 @@ export function jsonResponse(body: unknown, status = 200): Response {
     status,
     headers: { 'content-type': 'application/json' },
   });
+}
+
+type RouteHandler = (request: { url: URL; body: unknown }) => Response;
+
+/**
+ * Stubs `fetch` with a tiny router keyed by `"METHOD /path"` (query string ignored). Unknown routes
+ * answer 404 so a missing mock shows up as a visible error instead of a hanging request.
+ */
+export function mockApi(routes: Record<string, RouteHandler>) {
+  const fetchMock = vi.fn((input: string, init?: RequestInit) => {
+    const url = new URL(input, 'http://localhost');
+    const key = `${init?.method ?? 'GET'} ${url.pathname}`;
+    const handler = routes[key];
+    const body: unknown = typeof init?.body === 'string' ? JSON.parse(init.body) : undefined;
+    return Promise.resolve(
+      handler === undefined
+        ? jsonResponse({ error: { code: 'NOT_FOUND', message: `No mock for ${key}` } }, 404)
+        : handler({ url, body }),
+    );
+  });
+  vi.stubGlobal('fetch', fetchMock);
+  return fetchMock;
 }

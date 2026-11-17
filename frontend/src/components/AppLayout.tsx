@@ -20,7 +20,7 @@ export function AppLayout() {
   return (
     <div className="min-h-svh">
       <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+        <div className="mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4 sm:px-6 lg:px-10">
           <Link to={user === null ? '/' : homePathFor(user.role)} aria-label="Página inicial">
             <BrandLogo className="text-lg" />
           </Link>
@@ -45,7 +45,7 @@ export function AppLayout() {
           )}
         </div>
       </header>
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-screen-2xl px-4 py-8 sm:px-6 lg:px-10">
         <Outlet />
       </main>
     </div>

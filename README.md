@@ -139,12 +139,18 @@ Os testes do backend são de integração contra um **PostgreSQL real**, num ban
 - **Cadastros fora do escopo:** pacientes, tipos de exame e profissionais vêm do seed (tabelas próprias, sem CRUD), e o laudo referencia o profissional por chave estrangeira em vez de texto livre.
 - **Frontend:** organização por feature, TanStack Query para dados do servidor e shadcn/ui (estilo Luma) com a identidade visual do Benevita.
 
+## Limitações conhecidas
+
+- **Listagem sem paginação:** `GET /api/appointments` sem filtro de data devolve todos os agendamentos. Suficiente para a demonstração; em produção, entraria paginação por cursor (o UUID v7 já é ordenado no tempo).
+- **Aviso do driver nos testes:** o `@prisma/adapter-pg` emite um `DeprecationWarning` do `pg` (consultas concorrentes na mesma conexão de transação) em escritas aninhadas do Prisma. É interno da biblioteca e não afeta o comportamento.
+- **Regras de agenda espelhadas na UI:** o calendário bloqueia fins de semana e dias passados só para orientar o usuário; quem valida é o backend.
+
 ## Pendências
 
 - [x] Modelo de dados, migrations e constraints
 - [x] Autenticação e autorização por perfil
 - [x] Seed com dados fictícios e contas de demonstração
-- [ ] Agendamentos
+- [x] Agendamentos (lista com filtros, horários livres, novo agendamento, cancelamento)
 - [ ] Laudos (rascunho/publicação)
 - [ ] Área do paciente
 - [ ] Testes dos cenários obrigatórios
