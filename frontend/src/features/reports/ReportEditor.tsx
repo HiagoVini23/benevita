@@ -39,13 +39,17 @@ interface ReportEditorProps {
   appointmentId: string;
   /** Latest saved draft, or `null` while the report does not exist yet. */
   draft: StaffReport | null;
+  /** Exam start (ISO UTC). A report can be drafted in advance but published only afterwards. */
+  examAt: string;
+  /** Reference "now" for that check (epoch ms). The backend enforces the rule anyway. */
+  checkedAt: number;
 }
 
 function toMessage(error: unknown, fallback: string): string {
   return error instanceof ApiError ? error.message : fallback;
 }
 
-export function ReportEditor({ appointmentId, draft }: ReportEditorProps) {
+export function ReportEditor({ appointmentId, draft, examAt, checkedAt }: ReportEditorProps) {
   const [title, setTitle] = useState(draft?.title ?? '');
   const [body, setBody] = useState(draft?.body ?? '');
   const [professionalId, setProfessionalId] = useState<string | null>(
@@ -76,6 +80,7 @@ export function ReportEditor({ appointmentId, draft }: ReportEditorProps) {
     draft.body !== trimmedBody ||
     draft.professional.id !== professionalId;
   const isBusy = saveDraft.isPending || publish.isPending;
+  const examHasHappened = new Date(examAt).getTime() <= checkedAt;
 
   const handleSave = async () => {
     if (values === null) return;
@@ -195,6 +200,11 @@ export function ReportEditor({ appointmentId, draft }: ReportEditorProps) {
               Preencha título, profissional e texto para salvar ou publicar.
             </p>
           )}
+          {values !== null && !examHasHappened && (
+            <p className="mr-auto text-sm text-muted-foreground">
+              A publicação fica disponível a partir de {formatDateTime(examAt)}, horário do exame.
+            </p>
+          )}
           <Button
             type="submit"
             variant="outline"
@@ -204,7 +214,9 @@ export function ReportEditor({ appointmentId, draft }: ReportEditorProps) {
             Salvar rascunho
           </Button>
           <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-            <AlertDialogTrigger render={<Button disabled={values === null || isBusy} />}>
+            <AlertDialogTrigger
+              render={<Button disabled={values === null || isBusy || !examHasHappened} />}
+            >
               <SendIcon />
               Publicar
             </AlertDialogTrigger>

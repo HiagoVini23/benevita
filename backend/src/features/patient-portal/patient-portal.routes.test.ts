@@ -159,9 +159,11 @@ describe('patient portal routes', () => {
 
     it('makes a report available to the right patient once staff publish it (T4)', async () => {
       const { staff, ana, bruno, examType, professional } = await seed();
+      // An exam that already took place (Friday 10:00; now is Monday 09:00), so it can be published.
       const appointment = await createAppointment(db, {
         patientId: ana.patientId,
         examTypeId: examType.id,
+        scheduledAt: new Date('2026-11-13T13:00:00.000Z'),
       });
       const readAsAna = () =>
         app.inject({

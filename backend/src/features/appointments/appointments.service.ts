@@ -57,12 +57,19 @@ const staffAppointmentInclude = {
  * appointment and its report (cancel, save draft, publish) starts with this lock, so they run one
  * at a time per appointment and each sees the other's committed result (rules L5/L6).
  */
+interface LockedAppointment {
+  id: string;
+  status: AppointmentStatus;
+  scheduledAt: Date;
+}
+
 export async function lockAppointment(
   tx: Transaction,
   appointmentId: string,
-): Promise<{ id: string; status: AppointmentStatus }> {
-  const [row] = await tx.$queryRaw<{ id: string; status: AppointmentStatus }[]>`
-    SELECT id, status FROM appointments WHERE id = ${appointmentId}::uuid FOR UPDATE`;
+): Promise<LockedAppointment> {
+  const [row] = await tx.$queryRaw<LockedAppointment[]>`
+    SELECT id, status, scheduled_at AS "scheduledAt"
+    FROM appointments WHERE id = ${appointmentId}::uuid FOR UPDATE`;
   if (row === undefined) throw commonErrors.notFound('appointment');
   return row;
 }

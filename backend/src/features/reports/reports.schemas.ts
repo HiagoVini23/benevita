@@ -5,8 +5,6 @@ import { professionalSchema } from '../catalog/catalog.schemas.ts';
 const TITLE_MAX_LENGTH = 200;
 const BODY_MAX_LENGTH = 20_000;
 
-export const reportParamsSchema = z.object({ id: z.uuid() });
-
 export const saveDraftBodySchema = z.object({
   title: z.string().trim().min(1).max(TITLE_MAX_LENGTH),
   body: z.string().trim().min(1).max(BODY_MAX_LENGTH),

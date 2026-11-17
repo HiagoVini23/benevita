@@ -1,7 +1,8 @@
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod';
 import type { FeaturePluginOptions } from '../../shared/app-dependencies.ts';
 import { requireRole } from '../../shared/auth/guards.ts';
-import { reportParamsSchema, saveDraftBodySchema, staffReportSchema } from './reports.schemas.ts';
+import { idParamsSchema } from '../../shared/http/schemas.ts';
+import { saveDraftBodySchema, staffReportSchema } from './reports.schemas.ts';
 import { createReportsService } from './reports.service.ts';
 
 /** Staff side of reports, nested under the appointment that owns them (one report each). */
@@ -16,7 +17,7 @@ export const reportsRoutes: FastifyPluginCallbackZod<FeaturePluginOptions> = (
 
   app.get(
     '/appointments/:id/report',
-    { schema: { params: reportParamsSchema, response: { 200: staffReportSchema } } },
+    { schema: { params: idParamsSchema, response: { 200: staffReportSchema } } },
     (request) => reportsService.get(request.params.id),
   );
 
@@ -24,7 +25,7 @@ export const reportsRoutes: FastifyPluginCallbackZod<FeaturePluginOptions> = (
     '/appointments/:id/report',
     {
       schema: {
-        params: reportParamsSchema,
+        params: idParamsSchema,
         body: saveDraftBodySchema,
         response: { 200: staffReportSchema },
       },
@@ -34,7 +35,7 @@ export const reportsRoutes: FastifyPluginCallbackZod<FeaturePluginOptions> = (
 
   app.post(
     '/appointments/:id/report/publish',
-    { schema: { params: reportParamsSchema, response: { 200: staffReportSchema } } },
+    { schema: { params: idParamsSchema, response: { 200: staffReportSchema } } },
     (request) => reportsService.publish(request.params.id, request.user),
   );
 

@@ -105,7 +105,13 @@ function ReportPageContent({ appointmentId }: { appointmentId: string }) {
       {/* The editor keeps its own form state for the whole visit; it must not remount when the
           first save gives the report an id, or an in-flight publish would lose its feedback. */}
       {!isPublished && !isCanceled && (
-        <ReportEditor appointmentId={appointmentId} draft={currentReport} />
+        <ReportEditor
+          appointmentId={appointmentId}
+          draft={currentReport}
+          examAt={currentAppointment.scheduledAt}
+          // When the appointment was loaded: a stable "now" that keeps rendering pure.
+          checkedAt={appointment.dataUpdatedAt}
+        />
       )}
     </div>
   );

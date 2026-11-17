@@ -6,10 +6,14 @@ import { lockAppointment } from '../appointments/appointments.service.ts';
 import type { SaveDraftBody } from './reports.schemas.ts';
 
 export const reportErrors = {
-  /** Distinct code so clients can tell "no report yet" from "no such appointment". */
-  notFound: () => new AppError(404, 'REPORT_NOT_FOUND', 'Laudo não encontrado.'),
   appointmentCanceled: () =>
     new AppError(409, 'APPOINTMENT_CANCELED', 'Agendamentos cancelados não podem receber laudo.'),
+  examNotPerformedYet: () =>
+    new AppError(
+      409,
+      'EXAM_NOT_PERFORMED_YET',
+      'O laudo só pode ser publicado depois do horário do exame.',
+    ),
   alreadyPublished: () =>
     new AppError(
       409,
@@ -43,7 +47,7 @@ export function createReportsService({ db, clock }: Pick<AppDependencies, 'db' |
       if (appointment === null) throw commonErrors.notFound('appointment');
 
       const report = await findReport(db, appointmentId);
-      if (report === null) throw reportErrors.notFound();
+      if (report === null) throw commonErrors.reportNotFound();
       return report;
     },
 
@@ -84,12 +88,16 @@ export function createReportsService({ db, clock }: Pick<AppDependencies, 'db' |
       return db.$transaction(async (tx) => {
         const appointment = await lockAppointment(tx, appointmentId);
         if (appointment.status === 'CANCELED') throw reportErrors.appointmentCanceled();
+        // A report describes an exam that took place; drafts may be prepared in advance.
+        if (appointment.scheduledAt.getTime() > clock.now().getTime()) {
+          throw reportErrors.examNotPerformedYet();
+        }
 
         const report = await tx.report.findUnique({
           where: { appointmentId },
           select: { id: true, status: true },
         });
-        if (report === null) throw reportErrors.notFound();
+        if (report === null) throw commonErrors.reportNotFound();
         if (report.status === 'PUBLISHED') throw reportErrors.alreadyPublished();
 
         return tx.report.update({

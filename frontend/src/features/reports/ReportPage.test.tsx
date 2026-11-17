@@ -13,9 +13,10 @@ const professional = {
   specialty: 'Radiologia',
 };
 
+// An exam that already took place, so its report can be published.
 const appointment: StaffAppointment = {
   id: 'appt-1',
-  scheduledAt: '2026-11-17T13:00:00.000Z',
+  scheduledAt: '2026-11-10T13:00:00.000Z',
   status: 'SCHEDULED',
   canceledAt: null,
   patient: { id: 'patient-1', name: 'Ana Souza' },
@@ -236,5 +237,21 @@ describe('ReportPage', () => {
       await screen.findByText('Agendamentos cancelados não podem receber laudo.'),
     ).toBeInTheDocument();
     expect(screen.getByLabelText('Texto do laudo')).toHaveValue(draft.body);
+  });
+
+  it('allows a draft but not publishing before the exam takes place', async () => {
+    mockApi({
+      'GET /api/appointments/appt-1': () =>
+        jsonResponse({ ...appointment, scheduledAt: '2099-01-05T13:00:00.000Z' }),
+      'GET /api/professionals': () => jsonResponse([professional]),
+      'GET /api/appointments/appt-1/report': () => jsonResponse(draft),
+    });
+    renderPage();
+
+    expect(
+      await screen.findByText(/A publicação fica disponível a partir de 05\/01\/2099/),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Publicar' })).toBeDisabled();
+    expect(screen.getByLabelText('Texto do laudo')).toBeEnabled();
   });
 });

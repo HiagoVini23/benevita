@@ -7,13 +7,19 @@ import {
   createProfessional,
   createReport,
   createStaff,
+  FUTURE_SLOT,
 } from '../../test/factories.ts';
 import { setupTestApp } from '../../test/test-app.ts';
+
+// Friday 2026-11-13 10:00 in São Paulo: an exam that already took place (now is Monday 09:00).
+const PAST_SLOT = new Date('2026-11-13T13:00:00.000Z');
 
 describe('reports routes (staff)', () => {
   const { app, db, clock, authHeader } = setupTestApp();
 
-  async function seed(options: { appointmentStatus?: 'SCHEDULED' | 'CANCELED' } = {}) {
+  async function seed(
+    options: { appointmentStatus?: 'SCHEDULED' | 'CANCELED'; scheduledAt?: Date } = {},
+  ) {
     const staff = await createStaff(db, { name: 'Equipe Benevita' });
     const patient = await createPatient(db);
     const examType = await createExamType(db);
@@ -21,6 +27,7 @@ describe('reports routes (staff)', () => {
     const appointment = await createAppointment(db, {
       patientId: patient.patientId,
       examTypeId: examType.id,
+      scheduledAt: options.scheduledAt ?? PAST_SLOT,
       ...(options.appointmentStatus === undefined ? {} : { status: options.appointmentStatus }),
     });
     const draft = {
@@ -163,6 +170,30 @@ describe('reports routes (staff)', () => {
         publishedAt: clock.now().toISOString(),
         publishedBy: { id: staff.id, name: 'Equipe Benevita' },
       });
+    });
+
+    it('rejects publishing before the exam takes place, while allowing the draft', async () => {
+      const { staff, appointment, draft } = await seed({ scheduledAt: FUTURE_SLOT });
+
+      const saved = await saveDraft(staff, appointment.id, draft);
+      const response = await publish(staff, appointment.id);
+
+      expect(saved.statusCode).toBe(200);
+      expect(response.statusCode).toBe(409);
+      expect(response.json()).toMatchObject({ error: { code: 'EXAM_NOT_PERFORMED_YET' } });
+      await expect(
+        db.report.findUniqueOrThrow({ where: { appointmentId: appointment.id } }),
+      ).resolves.toMatchObject({ status: 'DRAFT' });
+    });
+
+    it('publishes once the exam time has passed', async () => {
+      const { staff, appointment, draft } = await seed({ scheduledAt: FUTURE_SLOT });
+      await saveDraft(staff, appointment.id, draft);
+      clock.set(new Date(FUTURE_SLOT.getTime() + 30 * 60_000));
+
+      const response = await publish(staff, appointment.id);
+
+      expect(response.statusCode).toBe(200);
     });
 
     it('rejects publishing twice', async () => {
