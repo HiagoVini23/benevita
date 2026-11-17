@@ -12,6 +12,16 @@ A **equipe da clínica** agenda exames e cadastra/publica laudos; o **paciente**
 
 O nome junta _bene_ (bem) e _vita_ (vida), do latim, e guarda **Benedito**, sobrenome do autor.
 
+## Sumário
+
+- [Como rodar](#como-rodar)
+- [Contas de demonstração](#contas-de-demonstração)
+- [Testes](#testes)
+- [Fuso horário](#fuso-horário)
+- [Decisões técnicas](#decisões-técnicas)
+- [Limitações e pendências](#limitações-e-pendências)
+- [Tempo dedicado](#tempo-dedicado)
+
 ## Como rodar
 
 **Pré-requisitos:** Node.js 22+ (recomendado 24, ver `.nvmrc`), npm 10+ e Docker.
@@ -25,7 +35,7 @@ cp .env.example .env
 
 # 3. Banco: sobe o PostgreSQL, aplica as migrations e carrega os dados fictícios
 npm run db:up
-npm run db:migrate -w backend
+npm run db:deploy -w backend
 npm run db:seed -w backend
 
 # 4. Aplicação, um terminal para cada
@@ -36,6 +46,10 @@ npm run dev:frontend   # App em http://localhost:5173
 Abra **http://localhost:5173**. Para recriar o banco do zero (migrations + dados fictícios): `npm run db:reset -w backend`.
 
 O seed é idempotente: recria usuários, pacientes, tipos de exame e profissionais, e recria os agendamentos e laudos relativos à data de hoje (exames de hoje, passados com laudo publicado, em rascunho e sem laudo, futuros e um cancelado).
+
+A tela da equipe abre no dia de hoje. Como a clínica não funciona no fim de semana, num sábado ou domingo a lista começa vazia: use o filtro de data para ver os outros dias.
+
+**Porta 5432 ocupada?** Se já houver um PostgreSQL local, o `db:up` falha com _port is already allocated_. Pare o serviço local ou troque a porta publicada no `docker-compose.yml` (ex.: `'5433:5432'`) e use a mesma porta em `DATABASE_URL` e `TEST_DATABASE_URL` no `.env`.
 
 ## Contas de demonstração
 
