@@ -53,12 +53,15 @@ A tela da equipe abre no dia de hoje. Como a clínica não funciona no fim de se
 
 ## Contas de demonstração
 
-| Perfil            | E-mail                | Senha         |
-| ----------------- | --------------------- | ------------- |
-| Equipe da clínica | `equipe@benevita.dev` | `equipe123`   |
-| Paciente          | `ana@benevita.dev`    | `paciente123` |
-| Paciente          | `bruno@benevita.dev`  | `paciente123` |
-| Paciente          | `carla@benevita.dev`  | `paciente123` |
+| Perfil            | E-mail                 | Senha         |
+| ----------------- | ---------------------- | ------------- |
+| Equipe da clínica | `mariana@benevita.dev` | `equipe123`   |
+| Equipe da clínica | `lucas@benevita.dev`   | `equipe123`   |
+| Paciente          | `ana@benevita.dev`     | `paciente123` |
+| Paciente          | `bruno@benevita.dev`   | `paciente123` |
+| Paciente          | `carla@benevita.dev`   | `paciente123` |
+
+As contas da equipe têm as mesmas permissões; cada laudo registra quem o criou e quem o publicou (a tela do laudo mostra "Publicado em … por …").
 
 ## Testes
 

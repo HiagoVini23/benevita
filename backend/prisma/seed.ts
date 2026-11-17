@@ -49,7 +49,13 @@ async function upsertPatient(email: string, name: string, birthDate: string) {
 }
 
 async function main() {
-  const staff = await upsertUser('equipe@benevita.dev', 'Equipe Benevita', 'STAFF', STAFF_PASSWORD);
+  const mariana = await upsertUser(
+    'mariana@benevita.dev',
+    'Mariana Alves',
+    'STAFF',
+    STAFF_PASSWORD,
+  );
+  const lucas = await upsertUser('lucas@benevita.dev', 'Lucas Pereira', 'STAFF', STAFF_PASSWORD);
   const ana = await upsertPatient('ana@benevita.dev', 'Ana Souza', '1988-03-14');
   const bruno = await upsertPatient('bruno@benevita.dev', 'Bruno Lima', '1975-09-02');
   const carla = await upsertPatient('carla@benevita.dev', 'Carla Mendes', '1996-12-21');
@@ -92,8 +98,8 @@ async function main() {
       body: 'Campos pulmonares livres. Seios costofrênicos livres. Área cardíaca dentro dos limites da normalidade.\n\nImpressão: exame sem alterações.',
       status: 'PUBLISHED',
       publishedAt: at(-1, '10:00'),
-      createdById: staff.id,
-      publishedById: staff.id,
+      createdById: mariana.id,
+      publishedById: mariana.id,
     },
   });
 
@@ -106,7 +112,7 @@ async function main() {
       professionalId: rafael.id,
       title: 'Ressonância magnética do joelho direito',
       body: 'Rascunho em elaboração.',
-      createdById: staff.id,
+      createdById: lucas.id,
     },
   });
 
@@ -145,7 +151,7 @@ async function main() {
   });
 
   console.warn(
-    'Seed concluído: 1 usuário da equipe, 3 pacientes, 4 tipos de exame, 3 profissionais.',
+    'Seed concluído: 2 usuários da equipe, 3 pacientes, 4 tipos de exame, 3 profissionais.',
   );
 }
 
