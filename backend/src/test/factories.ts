@@ -1,6 +1,7 @@
 import { hashPassword } from '../features/auth/password.ts';
 import type { AuthUser } from '../shared/auth/auth-user.ts';
 import type { Database } from '../shared/database/prisma.ts';
+import { DEFAULT_TEST_NOW } from './test-app.ts';
 
 export const TEST_PASSWORD = 'senha-de-teste';
 
@@ -76,7 +77,7 @@ export function createAppointment(
       ...ids,
       scheduledAt,
       status,
-      canceledAt: status === 'CANCELED' ? new Date() : null,
+      canceledAt: status === 'CANCELED' ? DEFAULT_TEST_NOW : null,
     },
   });
 }
@@ -100,7 +101,7 @@ export function createReport(
       title,
       body,
       status,
-      publishedAt: published ? new Date() : null,
+      publishedAt: published ? DEFAULT_TEST_NOW : null,
       publishedById: published ? ids.createdById : null,
     },
   });

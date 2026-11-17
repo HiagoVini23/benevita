@@ -46,8 +46,5 @@ export function errorHandler(
 }
 
 export function notFoundHandler(request: FastifyRequest, reply: FastifyReply): FastifyReply {
-  return sendError(
-    reply,
-    commonErrors.notFound(`Rota ${request.method} ${request.url} não encontrada.`),
-  );
+  return sendError(reply, commonErrors.routeNotFound(request.method, request.url));
 }

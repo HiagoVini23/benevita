@@ -31,7 +31,12 @@ describe('database constraints', () => {
     const rejected = results.filter((result) => result.status === 'rejected');
     expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(1);
     expect(rejected).toHaveLength(1);
-    expect(isUniqueConstraintViolation(rejected[0]?.reason)).toBe(true);
+    expect(isUniqueConstraintViolation(rejected[0]?.reason, 'appointments_active_slot_key')).toBe(
+      true,
+    );
+    expect(isUniqueConstraintViolation(rejected[0]?.reason, 'reports_appointment_id_key')).toBe(
+      false,
+    );
   });
 
   it('allows reusing the slot of a canceled appointment (R3)', async () => {

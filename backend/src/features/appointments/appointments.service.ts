@@ -11,9 +11,6 @@ import { businessSlotsOf, findSlotViolation, type SlotViolation } from './appoin
 import type { CreateAppointmentBody, ListAppointmentsQuery } from './appointments.schemas.ts';
 
 export const appointmentErrors = {
-  notFound: () => commonErrors.notFound('Agendamento não encontrado.'),
-  patientNotFound: () => commonErrors.notFound('Paciente não encontrado.'),
-  examTypeNotFound: () => commonErrors.notFound('Tipo de exame não encontrado.'),
   invalidSlot: () =>
     new AppError(
       400,
@@ -46,6 +43,9 @@ const slotViolationErrors: Record<SlotViolation, () => AppError> = {
   IN_PAST: appointmentErrors.inPast,
 };
 
+/** Partial unique index from the init migration: one SCHEDULED appointment per slot (R2/R3). */
+const ACTIVE_SLOT_INDEX = 'appointments_active_slot_key';
+
 const staffAppointmentInclude = {
   patient: { select: { id: true, name: true } },
   examType: true,
@@ -63,7 +63,7 @@ export async function lockAppointment(
 ): Promise<{ id: string; status: AppointmentStatus }> {
   const [row] = await tx.$queryRaw<{ id: string; status: AppointmentStatus }[]>`
     SELECT id, status FROM appointments WHERE id = ${appointmentId}::uuid FOR UPDATE`;
-  if (row === undefined) throw appointmentErrors.notFound();
+  if (row === undefined) throw commonErrors.notFound('appointment');
   return row;
 }
 
@@ -73,7 +73,7 @@ export function createAppointmentsService({ db, clock }: Pick<AppDependencies, '
       where: { id },
       include: staffAppointmentInclude,
     });
-    if (appointment === null) throw appointmentErrors.notFound();
+    if (appointment === null) throw commonErrors.notFound('appointment');
     return appointment;
   }
 
@@ -117,8 +117,8 @@ export function createAppointmentsService({ db, clock }: Pick<AppDependencies, '
         db.patient.findUnique({ where: { id: patientId }, select: { id: true } }),
         db.examType.findUnique({ where: { id: examTypeId }, select: { id: true } }),
       ]);
-      if (patient === null) throw appointmentErrors.patientNotFound();
-      if (examType === null) throw appointmentErrors.examTypeNotFound();
+      if (patient === null) throw commonErrors.notFound('patient');
+      if (examType === null) throw commonErrors.notFound('examType');
 
       try {
         return await db.appointment.create({
@@ -128,7 +128,8 @@ export function createAppointmentsService({ db, clock }: Pick<AppDependencies, '
       } catch (error) {
         // The partial unique index is the real guard against double booking: two concurrent
         // requests both pass the checks above, and the database rejects the second insert.
-        if (isUniqueConstraintViolation(error)) throw appointmentErrors.slotTaken();
+        if (isUniqueConstraintViolation(error, ACTIVE_SLOT_INDEX))
+          throw appointmentErrors.slotTaken();
         throw error;
       }
     },
