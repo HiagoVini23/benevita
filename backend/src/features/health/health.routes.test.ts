@@ -1,12 +1,8 @@
-import { afterAll, describe, expect, it } from 'vitest';
-import { buildApp } from '../../app.ts';
+import { describe, expect, it } from 'vitest';
+import { setupTestApp } from '../../test/test-app.ts';
 
 describe('GET /api/health', () => {
-  const app = buildApp();
-
-  afterAll(async () => {
-    await app.close();
-  });
+  const { app } = setupTestApp();
 
   it('reports the API as healthy', async () => {
     const response = await app.inject({ method: 'GET', url: '/api/health' });

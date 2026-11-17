@@ -13,6 +13,7 @@ export default defineConfig({
   schema: 'prisma/schema.prisma',
   migrations: {
     path: 'prisma/migrations',
+    seed: 'tsx prisma/seed.ts',
   },
   // `prisma generate` runs on postinstall and needs no connection, so a fresh clone without
   // .env must still install. Commands that touch the database fail fast without DATABASE_URL.
