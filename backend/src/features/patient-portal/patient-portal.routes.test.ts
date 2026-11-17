@@ -170,7 +170,7 @@ describe('patient portal routes', () => {
           headers: authHeader(ana),
         });
 
-      await app.inject({
+      const draft = await app.inject({
         method: 'PUT',
         url: `/api/appointments/${appointment.id}/report`,
         headers: authHeader(staff),
@@ -180,6 +180,8 @@ describe('patient portal routes', () => {
           professionalId: professional.id,
         },
       });
+      expect(draft.statusCode).toBe(200);
+      // The draft exists, yet the patient cannot see it.
       expect((await readAsAna()).statusCode).toBe(404);
 
       const published = await app.inject({
@@ -216,6 +218,48 @@ describe('patient portal routes', () => {
         headers: authHeader(bruno),
       });
       expect(asBruno.statusCode).toBe(404);
+    });
+
+    it("answers identically for another patient's report, a draft and a missing report", async () => {
+      const { staff, ana, bruno, examType, professional } = await seed();
+      const brunoPublished = await createAppointment(db, {
+        patientId: bruno.patientId,
+        examTypeId: examType.id,
+        scheduledAt: MONDAY,
+      });
+      const anaDraft = await createAppointment(db, {
+        patientId: ana.patientId,
+        examTypeId: examType.id,
+        scheduledAt: TUESDAY,
+      });
+      await createReport(db, {
+        appointmentId: brunoPublished.id,
+        professionalId: professional.id,
+        createdById: staff.id,
+        status: 'PUBLISHED',
+      });
+      await createReport(db, {
+        appointmentId: anaDraft.id,
+        professionalId: professional.id,
+        createdById: staff.id,
+      });
+
+      const [otherPatient, draft, missing] = await Promise.all(
+        [brunoPublished.id, anaDraft.id, crypto.randomUUID()].map((id) =>
+          app.inject({
+            method: 'GET',
+            url: `/api/me/appointments/${id}/report`,
+            headers: authHeader(ana),
+          }),
+        ),
+      );
+
+      // Same status and body: the response never reveals whether a report exists.
+      expect(otherPatient?.statusCode).toBe(404);
+      expect(draft?.statusCode).toBe(404);
+      expect(missing?.statusCode).toBe(404);
+      expect(draft?.body).toBe(otherPatient?.body);
+      expect(missing?.body).toBe(otherPatient?.body);
     });
 
     it('rejects a malformed appointment id', async () => {
