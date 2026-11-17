@@ -6,7 +6,7 @@ import {
   ThemeContext,
   type Theme,
   type ThemeContextValue,
-} from '@/lib/theme-context';
+} from './theme-context.ts';
 
 /**
  * Light/dark theme. Follows the system until the user picks one with the toggle; the choice is

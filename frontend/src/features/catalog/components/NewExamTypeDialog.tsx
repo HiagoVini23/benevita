@@ -3,9 +3,9 @@ import { toast } from 'sonner';
 import { FormDialog } from '@/components/FormDialog';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import type { ExamType } from './catalog.api.ts';
-import { reportRegistrationError } from './registration-error.ts';
-import { useCreateExamType } from './useCatalog.ts';
+import type { ExamType } from '@/features/catalog/catalog.api';
+import { reportRegistrationError } from '@/features/catalog/catalog.errors';
+import { useCreateExamType } from '@/features/catalog/catalog.hooks';
 
 export function NewExamTypeDialog({ onCreated }: { onCreated: (examType: ExamType) => void }) {
   const [open, setOpen] = useState(false);

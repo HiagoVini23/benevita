@@ -6,10 +6,10 @@ import { PageHeader } from '@/components/PageHeader';
 import { ReportDocument } from '@/components/ReportDocument';
 import { AppointmentStatusBadge, ReportStatusBadge } from '@/components/StatusBadges';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { useAppointment } from '@/features/appointments/useAppointments';
+import { useAppointment } from '@/features/appointments/appointments.hooks';
 import { formatDateTime } from '@/lib/clinic-time';
-import { ReportEditor } from './ReportEditor.tsx';
-import { useReport } from './useReport.ts';
+import { ReportEditor } from '@/features/reports/components/ReportEditor';
+import { useReport } from '@/features/reports/reports.hooks';
 
 function BackLink() {
   return (

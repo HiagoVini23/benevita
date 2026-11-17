@@ -4,9 +4,9 @@ import { FormDialog } from '@/components/FormDialog';
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { maskBrazilianDate, parseBrazilianDate, todayInClinic } from '@/lib/clinic-time';
-import type { NewPatientInput, PatientOption } from './catalog.api.ts';
-import { reportRegistrationError } from './registration-error.ts';
-import { useCreatePatient } from './useCatalog.ts';
+import type { NewPatientInput, PatientOption } from '@/features/catalog/catalog.api';
+import { reportRegistrationError } from '@/features/catalog/catalog.errors';
+import { useCreatePatient } from '@/features/catalog/catalog.hooks';
 
 // Mirrors the backend rule (catalog.schemas.ts); the API validates it anyway.
 const PASSWORD_MIN_LENGTH = 8;

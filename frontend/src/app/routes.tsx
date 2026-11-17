@@ -1,11 +1,11 @@
 import { Route } from 'react-router';
-import { AppLayout } from '@/components/AppLayout';
-import { AppointmentsPage } from '@/features/appointments/AppointmentsPage';
-import { LoginPage } from '@/features/auth/LoginPage';
-import { HomeRedirect, RequireRole } from '@/features/auth/RequireRole';
-import { PatientAppointmentsPage } from '@/features/patient-portal/PatientAppointmentsPage';
-import { PatientReportPage } from '@/features/patient-portal/PatientReportPage';
-import { ReportPage } from '@/features/reports/ReportPage';
+import { AppLayout } from './AppLayout.tsx';
+import { AppointmentsPage } from '@/features/appointments/pages/AppointmentsPage';
+import { LoginPage } from '@/features/auth/pages/LoginPage';
+import { HomeRedirect, RequireRole } from '@/features/auth/components/RequireRole';
+import { PatientAppointmentsPage } from '@/features/patient-portal/pages/PatientAppointmentsPage';
+import { PatientReportPage } from '@/features/patient-portal/pages/PatientReportPage';
+import { ReportPage } from '@/features/reports/pages/ReportPage';
 
 /**
  * Route tree for the data router (`createBrowserRouter`). A data router is required for

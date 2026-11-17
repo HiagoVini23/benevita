@@ -4,7 +4,7 @@ import { Route } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import type { StaffAppointment } from '@/features/appointments/appointments.api';
 import { jsonResponse, mockApi, renderWithProviders, staffUser } from '@/test/render';
-import type { StaffReport } from './reports.api.ts';
+import type { StaffReport } from '@/features/reports/reports.api';
 import { ReportPage } from './ReportPage.tsx';
 
 const professional = {

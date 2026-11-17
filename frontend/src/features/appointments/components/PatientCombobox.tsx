@@ -7,7 +7,7 @@ import {
   ComboboxList,
 } from '@/components/ui/combobox';
 import type { PatientOption } from '@/features/catalog/catalog.api';
-import { usePatients } from '@/features/catalog/useCatalog';
+import { usePatients } from '@/features/catalog/catalog.hooks';
 
 interface PatientComboboxProps {
   id?: string;

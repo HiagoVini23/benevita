@@ -13,8 +13,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { formatDateTime } from '@/lib/clinic-time';
-import type { StaffAppointment } from './appointments.api.ts';
-import { useCancelAppointment } from './useAppointments.ts';
+import type { StaffAppointment } from '@/features/appointments/appointments.api';
+import { useCancelAppointment } from '@/features/appointments/appointments.hooks';
 
 export function CancelAppointmentButton({ appointment }: { appointment: StaffAppointment }) {
   const [open, setOpen] = useState(false);

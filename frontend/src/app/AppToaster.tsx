@@ -1,5 +1,5 @@
 import { Toaster } from '@/components/ui/sonner';
-import { useTheme } from '@/lib/theme-context';
+import { useTheme } from '@/app/theme/theme-context';
 
 /** Toasts follow the app theme and can always be dismissed with their close button. */
 export function AppToaster() {

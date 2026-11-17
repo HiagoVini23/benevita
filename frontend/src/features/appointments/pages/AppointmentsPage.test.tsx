@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { todayInClinic } from '@/lib/clinic-time';
 import { jsonResponse, mockApi, renderWithProviders, staffUser } from '@/test/render';
-import type { StaffAppointment } from './appointments.api.ts';
+import type { StaffAppointment } from '@/features/appointments/appointments.api';
 import { AppointmentsPage } from './AppointmentsPage.tsx';
 
 const examType = { id: 'exam-1', name: 'Raio-X' };

@@ -11,14 +11,14 @@ import {
   EmptyTitle,
 } from '@/components/ui/empty';
 import { Skeleton } from '@/components/ui/skeleton';
-import { usePatients } from '@/features/catalog/useCatalog';
+import { usePatients } from '@/features/catalog/catalog.hooks';
 import { formatCalendarDateLong, todayInClinic } from '@/lib/clinic-time';
 import { cn } from '@/lib/utils';
-import { AppointmentFilters } from './AppointmentFilters.tsx';
-import type { AppointmentFilters as Filters } from './appointments.api.ts';
-import { AppointmentsTable } from './AppointmentsTable.tsx';
-import { NewAppointmentDialog } from './NewAppointmentDialog.tsx';
-import { useAppointments } from './useAppointments.ts';
+import { AppointmentFilters } from '@/features/appointments/components/AppointmentFilters';
+import type { AppointmentFilters as Filters } from '@/features/appointments/appointments.api';
+import { AppointmentsTable } from '@/features/appointments/components/AppointmentsTable';
+import { NewAppointmentDialog } from '@/features/appointments/components/NewAppointmentDialog';
+import { useAppointments } from '@/features/appointments/appointments.hooks';
 
 const LOADING_ROWS = 4;
 

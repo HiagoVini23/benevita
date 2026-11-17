@@ -1,6 +1,6 @@
 import { XIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { AppointmentFilters as Filters } from './appointments.api.ts';
+import type { AppointmentFilters as Filters } from '@/features/appointments/appointments.api';
 import { DatePicker } from './DatePicker.tsx';
 import { PatientCombobox } from './PatientCombobox.tsx';
 

@@ -13,7 +13,7 @@ import {
   EmptyTitle,
 } from '@/components/ui/empty';
 import { formatDateTime } from '@/lib/clinic-time';
-import { usePublishedReport } from './usePatientPortal.ts';
+import { usePublishedReport } from '@/features/patient-portal/patient-portal.hooks';
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 

@@ -3,14 +3,14 @@ import { CircleAlertIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router';
 import { BrandLogo } from '@/components/BrandLogo';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import { ThemeToggle } from '@/app/theme/ThemeToggle';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
-import { homePathFor, useAuth } from './auth-context.ts';
+import { homePathFor, useAuth } from '@/features/auth/auth.context';
 
 function redirectTarget(state: unknown): string | null {
   if (typeof state === 'object' && state !== null && 'from' in state) {

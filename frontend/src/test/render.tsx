@@ -4,9 +4,9 @@ import type { ReactNode } from 'react';
 import { createMemoryRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router';
 import { vi } from 'vitest';
 import { authQueryKeys, type AuthUser } from '@/features/auth/auth.api';
-import { AppToaster } from '@/components/AppToaster';
-import { ThemeProvider } from '@/components/ThemeProvider';
-import { AuthProvider } from '@/features/auth/AuthProvider';
+import { AppToaster } from '@/app/AppToaster';
+import { ThemeProvider } from '@/app/theme/ThemeProvider';
+import { AuthProvider } from '@/features/auth/components/AuthProvider';
 import { tokenStorage } from '@/lib/api-client';
 
 export const staffUser: AuthUser = {

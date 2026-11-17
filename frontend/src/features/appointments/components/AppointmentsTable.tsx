@@ -10,7 +10,7 @@ import {
 import { ButtonLink } from '@/components/ButtonLink';
 import { AppointmentStatusBadge, ReportStatusBadge } from '@/components/StatusBadges';
 import { formatDate, formatTime } from '@/lib/clinic-time';
-import type { StaffAppointment } from './appointments.api.ts';
+import type { StaffAppointment } from '@/features/appointments/appointments.api';
 import { CancelAppointmentButton } from './CancelAppointmentButton.tsx';
 
 function canCancel(appointment: StaffAppointment): boolean {

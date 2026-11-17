@@ -15,9 +15,9 @@ import {
   type BrazilianState,
   type NewProfessionalInput,
   type Professional,
-} from './catalog.api.ts';
-import { reportRegistrationError } from './registration-error.ts';
-import { useCreateProfessional } from './useCatalog.ts';
+} from '@/features/catalog/catalog.api';
+import { reportRegistrationError } from '@/features/catalog/catalog.errors';
+import { useCreateProfessional } from '@/features/catalog/catalog.hooks';
 
 // Mirrors the backend rule (catalog.schemas.ts): CRM numbers have 4 to 7 digits.
 const CRM_NUMBER_PATTERN = /^\d{4,7}$/;

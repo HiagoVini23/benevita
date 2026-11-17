@@ -13,8 +13,8 @@ import {
   EmptyTitle,
 } from '@/components/ui/empty';
 import { formatDate, formatTime } from '@/lib/clinic-time';
-import type { PatientAppointment } from './patient-portal.api.ts';
-import { useMyAppointments } from './usePatientPortal.ts';
+import type { PatientAppointment } from '@/features/patient-portal/patient-portal.api';
+import { useMyAppointments } from '@/features/patient-portal/patient-portal.hooks';
 
 function timeOf(appointment: PatientAppointment): number {
   return new Date(appointment.scheduledAt).getTime();

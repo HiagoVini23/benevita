@@ -1,8 +1,8 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { ApiError, setUnauthorizedHandler, tokenStorage } from '@/lib/api-client';
-import { authApi, authQueryKeys, type LoginCredentials } from './auth.api.ts';
-import { AuthContext, type AuthContextValue, type AuthStatus } from './auth-context.ts';
+import { authApi, authQueryKeys, type LoginCredentials } from '@/features/auth/auth.api';
+import { AuthContext, type AuthContextValue, type AuthStatus } from '@/features/auth/auth.context';
 
 const MAX_SESSION_CHECK_RETRIES = 2;
 

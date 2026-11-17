@@ -1,7 +1,7 @@
 import { CircleAlertIcon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { useAuth } from './auth-context.ts';
+import { useAuth } from '@/features/auth/auth.context';
 
 export function SessionError() {
   const { retry, logout } = useAuth();

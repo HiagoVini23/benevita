@@ -1,7 +1,7 @@
 import { Navigate, Outlet, useLocation } from 'react-router';
 import { Loading } from '@/components/Loading';
-import type { Role } from './auth.api.ts';
-import { homePathFor, useAuth } from './auth-context.ts';
+import type { Role } from '@/features/auth/auth.api';
+import { homePathFor, useAuth } from '@/features/auth/auth.context';
 import { SessionError } from './SessionError.tsx';
 
 /**

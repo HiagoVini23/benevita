@@ -22,14 +22,17 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
-import { NewExamTypeDialog } from '@/features/catalog/NewExamTypeDialog';
-import { NewPatientDialog } from '@/features/catalog/NewPatientDialog';
-import { useExamTypes } from '@/features/catalog/useCatalog';
+import { NewExamTypeDialog } from '@/features/catalog/components/NewExamTypeDialog';
+import { NewPatientDialog } from '@/features/catalog/components/NewPatientDialog';
+import { useExamTypes } from '@/features/catalog/catalog.hooks';
 import { formatDateTime, formatTime } from '@/lib/clinic-time';
-import { BUSINESS_HOURS_LABEL, isBookableDate } from './booking-rules.ts';
+import { BUSINESS_HOURS_LABEL, isBookableDate } from '@/features/appointments/appointments.rules';
 import { DatePicker } from './DatePicker.tsx';
 import { PatientCombobox } from './PatientCombobox.tsx';
-import { useAvailableSlots, useCreateAppointment } from './useAppointments.ts';
+import {
+  useAvailableSlots,
+  useCreateAppointment,
+} from '@/features/appointments/appointments.hooks';
 
 export function NewAppointmentDialog() {
   const [open, setOpen] = useState(false);

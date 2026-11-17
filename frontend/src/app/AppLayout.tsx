@@ -12,9 +12,9 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { homePathFor, useAuth } from '@/features/auth/auth-context';
-import { BrandLogo } from './BrandLogo.tsx';
-import { ThemeToggle } from './ThemeToggle.tsx';
+import { homePathFor, useAuth } from '@/features/auth/auth.context';
+import { BrandLogo } from '@/components/BrandLogo';
+import { ThemeToggle } from '@/app/theme/ThemeToggle';
 
 function initials(name: string): string {
   return name

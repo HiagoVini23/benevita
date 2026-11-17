@@ -26,12 +26,12 @@ import {
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
-import { NewProfessionalDialog } from '@/features/catalog/NewProfessionalDialog';
-import { useProfessionals } from '@/features/catalog/useCatalog';
+import { NewProfessionalDialog } from '@/features/catalog/components/NewProfessionalDialog';
+import { useProfessionals } from '@/features/catalog/catalog.hooks';
 import { ApiError } from '@/lib/api-client';
 import { formatDateTime } from '@/lib/clinic-time';
-import type { SaveDraftInput, StaffReport } from './reports.api.ts';
-import { usePublishReport, useSaveDraft } from './useReport.ts';
+import type { SaveDraftInput, StaffReport } from '@/features/reports/reports.api';
+import { usePublishReport, useSaveDraft } from '@/features/reports/reports.hooks';
 
 // UI limits mirroring the backend schema (backend/src/features/reports/reports.schemas.ts).
 const TITLE_MAX_LENGTH = 200;
