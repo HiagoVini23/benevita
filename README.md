@@ -46,8 +46,9 @@ cp .env.example .env
 # 3. Banco de dados
 npm run db:up
 
-# 4. Aplicação (backend em http://localhost:3333, frontend em http://localhost:5173)
-npm run dev
+# 4. Aplicação — um terminal para cada
+npm run dev:backend    # http://localhost:3333
+npm run dev:frontend   # http://localhost:5173
 ```
 
 O frontend usa o proxy do Vite: chamadas para `/api` são encaminhadas ao backend, sem necessidade de CORS em desenvolvimento.
@@ -56,7 +57,8 @@ O frontend usa o proxy do Vite: chamadas para `/api` são encaminhadas ao backen
 
 | Comando                         | Descrição                                 |
 | ------------------------------- | ----------------------------------------- |
-| `npm run dev`                   | Backend + frontend em modo watch          |
+| `npm run dev:backend`           | Backend em modo watch (porta 3333)        |
+| `npm run dev:frontend`          | Frontend em modo watch (porta 5173)       |
 | `npm run build`                 | Build de produção dos dois workspaces     |
 | `npm run check`                 | Format check + lint + typecheck + testes  |
 | `npm test`                      | Testes dos dois workspaces                |
