@@ -7,7 +7,8 @@ import { cn } from '@/lib/utils';
  */
 export function BrandMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 64 64" aria-hidden="true" className={cn('size-8 shrink-0', className)}>
+    // The viewBox is cropped to the drawing so the B sits at the same height as the wordmark.
+    <svg viewBox="6 1 46 62" aria-hidden="true" className={cn('h-8 w-auto shrink-0', className)}>
       <path d="M20 58 V15" stroke="var(--brand-seiva)" strokeWidth="6" strokeLinecap="round" />
       <path d="M20 15 C13 15 9 10 9 4 C16 4 20 9 20 15 Z" fill="var(--brand-broto)" />
       <path d="M20 16 Q45 13 43 25 Q41 33 20 33 Z" fill="var(--brand-broto)" />
@@ -28,12 +29,16 @@ export function BrandLogo({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        'flex items-center gap-2 font-heading font-extrabold tracking-tight text-foreground',
+        'flex items-center gap-1.5 font-heading font-extrabold tracking-tight',
         className,
       )}
     >
       <BrandMark />
-      <span>Benevita</span>
+      {/* Bene in the stem color, vita in the leaf color: the name echoes the mark. */}
+      <span>
+        <span className="text-foreground">Bene</span>
+        <span className="text-primary">vita</span>
+      </span>
     </span>
   );
 }

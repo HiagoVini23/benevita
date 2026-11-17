@@ -40,7 +40,7 @@ export function LoginPage() {
   return (
     <main className="grid min-h-svh place-items-center bg-[radial-gradient(ellipse_at_top,var(--accent),transparent_60%)] px-4">
       <div className="w-full max-w-sm space-y-6">
-        <BrandLogo className="justify-center text-3xl [&_svg]:size-12" />
+        <BrandLogo className="justify-center text-3xl [&_svg]:h-11" />
         <Card>
           <CardHeader>
             <CardTitle>Entrar</CardTitle>
