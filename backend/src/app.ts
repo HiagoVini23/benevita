@@ -9,6 +9,7 @@ import { appointmentsRoutes } from './features/appointments/appointments.routes.
 import { authRoutes } from './features/auth/auth.routes.ts';
 import { catalogRoutes } from './features/catalog/catalog.routes.ts';
 import { healthRoutes } from './features/health/health.routes.ts';
+import { patientPortalRoutes } from './features/patient-portal/patient-portal.routes.ts';
 import { reportsRoutes } from './features/reports/reports.routes.ts';
 import type { AppDependencies } from './shared/app-dependencies.ts';
 import { errorHandler, notFoundHandler } from './shared/errors/error-handler.ts';
@@ -35,6 +36,7 @@ export function buildApp(deps: AppDependencies, { logger = false }: BuildAppOpti
   void app.register(catalogRoutes, { prefix: '/api', deps });
   void app.register(appointmentsRoutes, { prefix: '/api', deps });
   void app.register(reportsRoutes, { prefix: '/api', deps });
+  void app.register(patientPortalRoutes, { prefix: '/api', deps });
 
   return app;
 }
