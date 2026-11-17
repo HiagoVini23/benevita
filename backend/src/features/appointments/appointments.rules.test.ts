@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { businessSlotsOf, findSlotViolation } from './appointment-rules.ts';
+import { businessSlotsOf, findSlotViolation } from './appointments.rules.ts';
 
 // Monday 2026-11-16, 09:00 in São Paulo.
 const NOW = new Date('2026-11-16T12:00:00.000Z');

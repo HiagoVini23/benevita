@@ -4,7 +4,7 @@
  * screen opens on today), a past exam without report (to write and publish one), a published
  * report, a draft, upcoming exams and a cancellation.
  */
-import { isBusinessDay } from '../src/features/appointments/appointment-rules.ts';
+import { isBusinessDay } from '../src/features/appointments/appointments.rules.ts';
 import { hashPassword } from '../src/shared/auth/password.ts';
 import type { Role } from '../src/generated/prisma/enums.ts';
 import { loadEnv } from '../src/shared/config/env.ts';

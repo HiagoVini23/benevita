@@ -7,7 +7,7 @@ import {
 } from '../../shared/database/prisma.ts';
 import { AppError, commonErrors } from '../../shared/errors/app-error.ts';
 import { clinicDayRange, type CalendarDate } from '../../shared/time/clinic-time.ts';
-import { businessSlotsOf, findSlotViolation, type SlotViolation } from './appointment-rules.ts';
+import { businessSlotsOf, findSlotViolation, type SlotViolation } from './appointments.rules.ts';
 import type { CreateAppointmentBody, ListAppointmentsQuery } from './appointments.schemas.ts';
 
 export const appointmentErrors = {
