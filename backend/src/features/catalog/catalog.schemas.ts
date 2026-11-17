@@ -20,15 +20,47 @@ export const professionalSchema = z.object({
 
 const NAME_MAX_LENGTH = 120;
 const PASSWORD_MIN_LENGTH = 8;
-const PASSWORD_MAX_LENGTH = 128;
+// bcrypt only uses the first 72 bytes; a longer initial password would be silently truncated.
+const PASSWORD_MAX_LENGTH = 72;
 
+export const BRAZILIAN_STATES = [
+  'AC',
+  'AL',
+  'AP',
+  'AM',
+  'BA',
+  'CE',
+  'DF',
+  'ES',
+  'GO',
+  'MA',
+  'MT',
+  'MS',
+  'MG',
+  'PA',
+  'PB',
+  'PR',
+  'PE',
+  'PI',
+  'RJ',
+  'RN',
+  'RS',
+  'RO',
+  'RR',
+  'SC',
+  'SP',
+  'SE',
+  'TO',
+] as const;
+
+/** Free text is trimmed, so values are never stored with leading or trailing spaces. */
 const requiredText = (max = NAME_MAX_LENGTH) => z.string().trim().min(1).max(max);
 
 /** A patient always gets a login: the clinic sets an initial password and hands it over. */
 export const createPatientBodySchema = z.object({
   name: requiredText(),
   birthDate: z.iso.date(),
-  email: z.email().transform((email) => email.toLowerCase()),
+  email: z.string().trim().toLowerCase().pipe(z.email()),
   password: z.string().min(PASSWORD_MIN_LENGTH).max(PASSWORD_MAX_LENGTH),
 });
 
@@ -38,8 +70,13 @@ export const createExamTypeBodySchema = z.object({
 
 export const createProfessionalBodySchema = z.object({
   name: requiredText(),
-  // Normalized (upper case, single spaces) so "crm-sp  123" and "CRM-SP 123" are the same CRM.
-  crm: requiredText(30).transform((crm) => crm.toUpperCase().replace(/\s+/g, ' ')),
+  // A CRM is a number registered in a state. The API takes both parts and stores one canonical
+  // text ("CRM-SP 123456"), so the same CRM can never be written in two different ways.
+  crmNumber: z
+    .string()
+    .trim()
+    .regex(/^\d{4,7}$/, 'O número do CRM deve ter de 4 a 7 dígitos.'),
+  crmState: z.enum(BRAZILIAN_STATES),
   specialty: requiredText(80),
 });
 

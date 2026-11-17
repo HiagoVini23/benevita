@@ -63,7 +63,7 @@ describe('catalog registration', () => {
     const response = await post(staff, '/api/patients', {
       name: 'Daniela Prado',
       birthDate: '1992-07-15',
-      email: 'Daniela@Test.dev',
+      email: '  Daniela@Test.dev  ',
       password: 'senha-inicial',
     });
 
@@ -95,6 +95,17 @@ describe('catalog registration', () => {
     expect(future.json()).toMatchObject({ error: { code: 'BIRTH_DATE_IN_FUTURE' } });
   });
 
+  it('rejects exam type names differing only in case even when created at the same time', async () => {
+    const staff = await createStaff(db);
+
+    const responses = await Promise.all([
+      post(staff, '/api/exam-types', { name: 'Densitometria' }),
+      post(staff, '/api/exam-types', { name: 'DENSITOMETRIA' }),
+    ]);
+
+    expect(responses.map((response) => response.statusCode).sort()).toEqual([201, 409]);
+  });
+
   it('registers exam types, rejecting duplicates regardless of case', async () => {
     const staff = await createStaff(db);
 
@@ -107,17 +118,24 @@ describe('catalog registration', () => {
     expect(duplicate.json()).toMatchObject({ error: { code: 'EXAM_TYPE_EXISTS' } });
   });
 
-  it('registers professionals with a normalized, unique CRM', async () => {
+  it('registers professionals with a canonical, unique CRM built from number and state', async () => {
     const staff = await createStaff(db);
-    const payload = { name: 'Dr. Paulo Reis', crm: 'crm-sp  654321', specialty: 'Radiologia' };
+    const payload = {
+      name: '  Dr. Paulo Reis  ',
+      crmNumber: ' 654321 ',
+      crmState: 'SP',
+      specialty: 'Radiologia',
+    };
 
     const created = await post(staff, '/api/professionals', payload);
-    const duplicate = await post(staff, '/api/professionals', { ...payload, crm: 'CRM-SP 654321' });
+    const duplicate = await post(staff, '/api/professionals', { ...payload, name: 'Outro nome' });
+    const invalid = await post(staff, '/api/professionals', { ...payload, crmNumber: 'CRM 12' });
 
     expect(created.statusCode).toBe(201);
-    expect(created.json()).toMatchObject({ crm: 'CRM-SP 654321' });
+    expect(created.json()).toMatchObject({ name: 'Dr. Paulo Reis', crm: 'CRM-SP 654321' });
     expect(duplicate.statusCode).toBe(409);
     expect(duplicate.json()).toMatchObject({ error: { code: 'CRM_TAKEN' } });
+    expect(invalid.statusCode).toBe(400);
   });
 
   it('only lets staff register', async () => {
@@ -125,7 +143,12 @@ describe('catalog registration', () => {
 
     const responses = await Promise.all([
       post(patient, '/api/exam-types', { name: 'Densitometria' }),
-      post(patient, '/api/professionals', { name: 'X', crm: 'CRM 1', specialty: 'Y' }),
+      post(patient, '/api/professionals', {
+        name: 'X',
+        crmNumber: '1234',
+        crmState: 'SP',
+        specialty: 'Y',
+      }),
       post(patient, '/api/patients', {
         name: 'X',
         birthDate: '1990-01-01',

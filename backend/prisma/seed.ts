@@ -5,7 +5,7 @@
  * report, a draft, upcoming exams and a cancellation.
  */
 import { isBusinessDay } from '../src/features/appointments/appointment-rules.ts';
-import { hashPassword } from '../src/features/auth/password.ts';
+import { hashPassword } from '../src/shared/auth/password.ts';
 import type { Role } from '../src/generated/prisma/enums.ts';
 import { loadEnv } from '../src/shared/config/env.ts';
 import { createDatabase } from '../src/shared/database/prisma.ts';

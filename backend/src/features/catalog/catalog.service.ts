@@ -2,7 +2,7 @@ import type { AppDependencies } from '../../shared/app-dependencies.ts';
 import { isUniqueConstraintViolation } from '../../shared/database/prisma.ts';
 import { AppError } from '../../shared/errors/app-error.ts';
 import { toClinicParts } from '../../shared/time/clinic-time.ts';
-import { hashPassword } from '../auth/password.ts';
+import { hashPassword } from '../../shared/auth/password.ts';
 import type {
   CreateExamTypeBody,
   CreatePatientBody,
@@ -69,24 +69,26 @@ export function createCatalogService({ db, clock }: Pick<AppDependencies, 'db' |
     },
 
     async createExamType({ name }: CreateExamTypeBody) {
-      const existing = await db.examType.findFirst({
-        where: { name: { equals: name, mode: 'insensitive' } },
-        select: { id: true },
-      });
-      if (existing !== null) throw catalogErrors.examTypeExists();
       try {
         return await db.examType.create({ data: { name } });
       } catch (error) {
-        if (isUniqueConstraintViolation(error, 'exam_types_name_key')) {
+        // exam_types_name_lower_key makes "Mamografia" and "mamografia" the same name, even when
+        // both are created at the same time.
+        if (
+          isUniqueConstraintViolation(error, 'exam_types_name_lower_key') ||
+          isUniqueConstraintViolation(error, 'exam_types_name_key')
+        ) {
           throw catalogErrors.examTypeExists();
         }
         throw error;
       }
     },
 
-    async createProfessional(input: CreateProfessionalBody) {
+    async createProfessional({ name, crmNumber, crmState, specialty }: CreateProfessionalBody) {
       try {
-        return await db.professional.create({ data: input });
+        return await db.professional.create({
+          data: { name, specialty, crm: `CRM-${crmState} ${crmNumber}` },
+        });
       } catch (error) {
         if (isUniqueConstraintViolation(error, 'professionals_crm_key')) {
           throw catalogErrors.crmTaken();

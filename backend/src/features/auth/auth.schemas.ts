@@ -2,7 +2,8 @@ import { z } from 'zod';
 import { Role } from '../../generated/prisma/enums.ts';
 
 export const loginBodySchema = z.object({
-  email: z.email().transform((email) => email.toLowerCase()),
+  // Trimmed and lower-cased before validation, exactly as when the account was created.
+  email: z.string().trim().toLowerCase().pipe(z.email()),
   // bcrypt only uses the first 72 bytes; a bound also avoids hashing huge payloads.
   password: z.string().min(1).max(128),
 });

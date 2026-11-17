@@ -1,4 +1,4 @@
-import { hashPassword } from '../features/auth/password.ts';
+import { hashPassword } from '../shared/auth/password.ts';
 import type { AuthUser } from '../shared/auth/auth-user.ts';
 import type { Database } from '../shared/database/prisma.ts';
 import { DEFAULT_TEST_NOW } from './test-app.ts';

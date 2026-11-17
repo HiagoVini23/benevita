@@ -2,7 +2,7 @@ import type { AuthUser } from '../../shared/auth/auth-user.ts';
 import type { Database } from '../../shared/database/prisma.ts';
 import { AppError } from '../../shared/errors/app-error.ts';
 import type { LoginBody } from './auth.schemas.ts';
-import { unknownUserPasswordHash, verifyPassword } from './password.ts';
+import { unknownUserPasswordHash, verifyPassword } from '../../shared/auth/password.ts';
 
 const authErrors = {
   invalidCredentials: () => new AppError(401, 'INVALID_CREDENTIALS', 'E-mail ou senha inválidos.'),
