@@ -22,14 +22,13 @@ export class AppError extends Error {
  * Display names of the domain resources, used in user-facing messages. A const object (not a TS
  * enum, which `erasableSyntaxOnly` forbids) gives the same single source and type safety.
  */
-export type Resource = 'appointment' | 'patient' | 'examType' | 'professional' | 'report';
+export type Resource = 'appointment' | 'patient' | 'examType' | 'professional';
 
 const RESOURCES: Record<Resource, { label: string; gender: 'm' | 'f' }> = {
   appointment: { label: 'Agendamento', gender: 'm' },
   patient: { label: 'Paciente', gender: 'm' },
   examType: { label: 'Tipo de exame', gender: 'm' },
   professional: { label: 'Profissional', gender: 'm' },
-  report: { label: 'Laudo', gender: 'm' },
 };
 
 export const commonErrors = {

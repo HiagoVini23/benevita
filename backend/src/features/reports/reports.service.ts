@@ -6,6 +6,8 @@ import { lockAppointment } from '../appointments/appointments.service.ts';
 import type { SaveDraftBody } from './reports.schemas.ts';
 
 export const reportErrors = {
+  /** Distinct code so clients can tell "no report yet" from "no such appointment". */
+  notFound: () => new AppError(404, 'REPORT_NOT_FOUND', 'Laudo não encontrado.'),
   appointmentCanceled: () =>
     new AppError(409, 'APPOINTMENT_CANCELED', 'Agendamentos cancelados não podem receber laudo.'),
   alreadyPublished: () =>
@@ -41,7 +43,7 @@ export function createReportsService({ db, clock }: Pick<AppDependencies, 'db' |
       if (appointment === null) throw commonErrors.notFound('appointment');
 
       const report = await findReport(db, appointmentId);
-      if (report === null) throw commonErrors.notFound('report');
+      if (report === null) throw reportErrors.notFound();
       return report;
     },
 
@@ -87,7 +89,7 @@ export function createReportsService({ db, clock }: Pick<AppDependencies, 'db' |
           where: { appointmentId },
           select: { id: true, status: true },
         });
-        if (report === null) throw commonErrors.notFound('report');
+        if (report === null) throw reportErrors.notFound();
         if (report.status === 'PUBLISHED') throw reportErrors.alreadyPublished();
 
         return tx.report.update({

@@ -182,6 +182,7 @@ describe('reports routes (staff)', () => {
       const response = await publish(staff, appointment.id);
 
       expect(response.statusCode).toBe(404);
+      expect(response.json()).toMatchObject({ error: { code: 'REPORT_NOT_FOUND' } });
     });
 
     it('rejects publishing a draft left on a canceled appointment (L5)', async () => {
@@ -268,7 +269,9 @@ describe('reports routes (staff)', () => {
       });
 
       expect(response.statusCode).toBe(404);
-      expect(response.json()).toMatchObject({ error: { message: 'Laudo não encontrado.' } });
+      expect(response.json()).toMatchObject({
+        error: { code: 'REPORT_NOT_FOUND', message: 'Laudo não encontrado.' },
+      });
     });
   });
 
