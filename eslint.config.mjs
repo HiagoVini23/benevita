@@ -12,6 +12,8 @@ export default defineConfig([
     '**/dist',
     '**/coverage',
     'backend/src/generated',
+    // shadcn/ui components are vendored: generated and updated by the shadcn CLI, not hand-written.
+    'frontend/src/components/ui',
     'docs',
     '.claude',
   ]),
