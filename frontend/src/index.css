@@ -78,7 +78,7 @@
   --accent: var(--brand-orvalho);
   --accent-foreground: var(--brand-seiva);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.915 0.015 195);
+  --border: oklch(0.86 0.022 200);
   --input: oklch(0.9 0.018 195);
   --ring: var(--brand-broto);
   --chart-1: var(--brand-broto);
@@ -93,7 +93,7 @@
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #d3f3ec;
   --sidebar-accent-foreground: var(--brand-seiva);
-  --sidebar-border: oklch(0.915 0.015 195);
+  --sidebar-border: oklch(0.86 0.022 200);
   --sidebar-ring: var(--brand-broto);
 }
 
@@ -115,7 +115,7 @@
   --accent: #12333d;
   --accent-foreground: #e6faf6;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: #1d3d48;
+  --border: #2a5361;
   --input: #234652;
   --ring: #2dd4bf;
   --chart-1: #2dd4bf;
@@ -129,7 +129,7 @@
   --sidebar-primary-foreground: #0b1f27;
   --sidebar-accent: #12333d;
   --sidebar-accent-foreground: #e6faf6;
-  --sidebar-border: #1d3d48;
+  --sidebar-border: #2a5361;
   --sidebar-ring: #2dd4bf;
 
   --mark-stem: #e6faf6;
@@ -151,5 +151,31 @@
   }
   html.dark {
     color-scheme: dark;
+  }
+}
+
+/* Stacked dialogs (e.g. "Novo tipo de exame" over "Novo agendamento"): the dialog behind steps
+   back (smaller and dimmer) and the one in front gets a defined edge and a deeper shadow, so it is
+   always clear which one is active. Base UI sets these data attributes on the popups. */
+@layer components {
+  [data-slot='dialog-content'] {
+    transition:
+      scale 150ms ease,
+      filter 150ms ease;
+  }
+  [data-slot='dialog-content'][data-nested-dialog-open] {
+    scale: 0.94;
+    filter: brightness(0.86);
+  }
+  [data-slot='dialog-content'][data-nested] {
+    border: 1px solid var(--border);
+    box-shadow:
+      0 24px 64px -12px rgb(0 0 0 / 0.35),
+      0 8px 20px -8px rgb(0 0 0 / 0.2);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-slot='dialog-content'] {
+      transition: none;
+    }
   }
 }
