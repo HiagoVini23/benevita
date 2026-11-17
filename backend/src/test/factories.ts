@@ -57,3 +57,51 @@ export function createProfessional(db: Database, overrides: { name?: string; crm
     },
   });
 }
+
+/** Tuesday 2026-11-17 10:00 in São Paulo: a future business slot relative to DEFAULT_TEST_NOW. */
+export const FUTURE_SLOT = new Date('2026-11-17T13:00:00.000Z');
+
+export function createAppointment(
+  db: Database,
+  data: {
+    patientId: string;
+    examTypeId: string;
+    scheduledAt?: Date;
+    status?: 'SCHEDULED' | 'CANCELED';
+  },
+) {
+  const { status = 'SCHEDULED', scheduledAt = FUTURE_SLOT, ...ids } = data;
+  return db.appointment.create({
+    data: {
+      ...ids,
+      scheduledAt,
+      status,
+      canceledAt: status === 'CANCELED' ? new Date() : null,
+    },
+  });
+}
+
+export function createReport(
+  db: Database,
+  data: {
+    appointmentId: string;
+    professionalId: string;
+    createdById: string;
+    status?: 'DRAFT' | 'PUBLISHED';
+    title?: string;
+    body?: string;
+  },
+) {
+  const { status = 'DRAFT', title = 'Laudo de teste', body = 'Texto do laudo.', ...ids } = data;
+  const published = status === 'PUBLISHED';
+  return db.report.create({
+    data: {
+      ...ids,
+      title,
+      body,
+      status,
+      publishedAt: published ? new Date() : null,
+      publishedById: published ? ids.createdById : null,
+    },
+  });
+}

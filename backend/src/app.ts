@@ -5,6 +5,7 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from 'fastify-type-provider-zod';
+import { appointmentsRoutes } from './features/appointments/appointments.routes.ts';
 import { authRoutes } from './features/auth/auth.routes.ts';
 import { catalogRoutes } from './features/catalog/catalog.routes.ts';
 import { healthRoutes } from './features/health/health.routes.ts';
@@ -31,6 +32,7 @@ export function buildApp(deps: AppDependencies, { logger = false }: BuildAppOpti
   void app.register(healthRoutes, { prefix: '/api' });
   void app.register(authRoutes, { prefix: '/api', deps });
   void app.register(catalogRoutes, { prefix: '/api', deps });
+  void app.register(appointmentsRoutes, { prefix: '/api', deps });
 
   return app;
 }
