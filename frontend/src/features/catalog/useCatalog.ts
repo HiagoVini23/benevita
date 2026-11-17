@@ -19,3 +19,11 @@ export function useExamTypes() {
     ...REFERENCE_DATA,
   });
 }
+
+export function useProfessionals() {
+  return useQuery({
+    queryKey: catalogQueryKeys.professionals,
+    queryFn: catalogApi.professionals,
+    ...REFERENCE_DATA,
+  });
+}

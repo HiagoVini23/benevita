@@ -12,7 +12,7 @@ import {
 import { formatDate, formatTime } from '@/lib/clinic-time';
 import type { StaffAppointment } from './appointments.api.ts';
 import { CancelAppointmentButton } from './CancelAppointmentButton.tsx';
-import { AppointmentStatusBadge, ReportStatusBadge } from './StatusBadges.tsx';
+import { AppointmentStatusBadge, ReportStatusBadge } from '@/components/StatusBadges';
 
 function canCancel(appointment: StaffAppointment): boolean {
   return appointment.status === 'SCHEDULED' && appointment.report?.status !== 'PUBLISHED';
@@ -66,7 +66,7 @@ export function AppointmentsTable({ appointments }: { appointments: StaffAppoint
                 <AppointmentStatusBadge status={appointment.status} />
               </TableCell>
               <TableCell>
-                <ReportStatusBadge report={appointment.report} />
+                <ReportStatusBadge status={appointment.report?.status ?? null} />
               </TableCell>
               <TableCell>
                 <div className="flex justify-end gap-1">

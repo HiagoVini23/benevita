@@ -151,7 +151,7 @@ Os testes do backend são de integração contra um **PostgreSQL real**, num ban
 - [x] Autenticação e autorização por perfil
 - [x] Seed com dados fictícios e contas de demonstração
 - [x] Agendamentos (lista com filtros, horários livres, novo agendamento, cancelamento)
-- [ ] Laudos (rascunho/publicação)
+- [x] Laudos (rascunho, edição, publicação com confirmação)
 - [ ] Área do paciente
 - [ ] Testes dos cenários obrigatórios
 - [ ] Limitações conhecidas e tempo dedicado

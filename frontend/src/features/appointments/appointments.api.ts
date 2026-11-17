@@ -1,8 +1,6 @@
 import type { ExamType } from '@/features/catalog/catalog.api';
 import { apiRequest } from '@/lib/api-client';
-
-export type AppointmentStatus = 'SCHEDULED' | 'CANCELED';
-export type ReportStatus = 'DRAFT' | 'PUBLISHED';
+import type { AppointmentStatus, ReportStatus } from '@/lib/domain';
 
 export interface StaffAppointment {
   id: string;
@@ -35,12 +33,14 @@ interface AvailableSlots {
 export const appointmentQueryKeys = {
   all: ['appointments'] as const,
   list: (filters: AppointmentFilters) => ['appointments', 'list', filters] as const,
+  detail: (id: string) => ['appointments', 'detail', id] as const,
   availableSlots: (date: string) => ['appointments', 'available-slots', date] as const,
 };
 
 export const appointmentsApi = {
   list: ({ date, patientId }: AppointmentFilters) =>
     apiRequest<StaffAppointment[]>('/appointments', { query: { date, patientId } }),
+  get: (id: string) => apiRequest<StaffAppointment>(`/appointments/${id}`),
   availableSlots: (date: string) =>
     apiRequest<AvailableSlots>('/appointments/available-slots', { query: { date } }),
   create: (input: CreateAppointmentInput) =>

@@ -1,5 +1,5 @@
 import { Badge } from '@/components/ui/badge';
-import type { AppointmentStatus, StaffAppointment } from './appointments.api.ts';
+import type { AppointmentStatus, ReportStatus } from '@/lib/domain';
 
 export function AppointmentStatusBadge({ status }: { status: AppointmentStatus }) {
   return status === 'SCHEDULED' ? (
@@ -11,9 +11,10 @@ export function AppointmentStatusBadge({ status }: { status: AppointmentStatus }
   );
 }
 
-export function ReportStatusBadge({ report }: { report: StaffAppointment['report'] }) {
-  if (report === null) return <span className="text-sm text-muted-foreground">Sem laudo</span>;
-  return report.status === 'PUBLISHED' ? (
+/** `null` means the appointment has no report yet. */
+export function ReportStatusBadge({ status }: { status: ReportStatus | null }) {
+  if (status === null) return <span className="text-sm text-muted-foreground">Sem laudo</span>;
+  return status === 'PUBLISHED' ? (
     <Badge>Publicado</Badge>
   ) : (
     <Badge variant="outline">Rascunho</Badge>

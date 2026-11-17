@@ -22,6 +22,13 @@ export function useAppointments(filters: AppointmentFilters) {
   });
 }
 
+export function useAppointment(id: string) {
+  return useQuery({
+    queryKey: appointmentQueryKeys.detail(id),
+    queryFn: () => appointmentsApi.get(id),
+  });
+}
+
 export function useAvailableSlots(date: string | undefined) {
   return useQuery({
     queryKey: appointmentQueryKeys.availableSlots(date ?? ''),

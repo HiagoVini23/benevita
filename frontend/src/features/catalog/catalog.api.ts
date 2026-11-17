@@ -13,12 +13,21 @@ export interface ExamType {
   name: string;
 }
 
+export interface Professional {
+  id: string;
+  name: string;
+  crm: string;
+  specialty: string;
+}
+
 export const catalogQueryKeys = {
   patients: ['catalog', 'patients'] as const,
   examTypes: ['catalog', 'exam-types'] as const,
+  professionals: ['catalog', 'professionals'] as const,
 };
 
 export const catalogApi = {
   patients: () => apiRequest<PatientOption[]>('/patients'),
   examTypes: () => apiRequest<ExamType[]>('/exam-types'),
+  professionals: () => apiRequest<Professional[]>('/professionals'),
 };
